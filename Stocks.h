@@ -7,7 +7,7 @@ using namespace std;
 
 namespace fre
 {
-	typedef vector<string> Vector;
+	typedef vector<double> Vector;
 	typedef vector<Vector> Matrix;
 	
 	class Stocks
