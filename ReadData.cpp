@@ -76,7 +76,7 @@ class Stocks
 
 	
 //Read the symbols from the CSV file to fetch the data
-void populateSymbolVector(map<string, Stocks> &data)
+void LoadEarnings(map<string, Stocks> &data)
 {
 	//declare and open fstream object to read from the excel file
 	ifstream fin;
@@ -121,7 +121,7 @@ void populateSymbolVector(map<string, Stocks> &data)
 	}
 }	
 
-
+/*
 struct MemoryStruct {
 	char* memory;
 	size_t size;
@@ -134,6 +134,7 @@ void* myrealloc(void* ptr, size_t size)
 	else
 		return malloc(size);
 }
+*/
 
 int write_data(void* ptr, int size, int nmemb, void* data)
 {
@@ -295,77 +296,7 @@ void FetchData(map<string, Stocks> &stock_map)
 			}
 		}
 		
-		
-		
 	}	
-		//replace with stock object
-		/*
-		auto itr = stock_map.begin();
-		
-		for (; itr != stock_map.end(); itr++)
-		{
-			struct MemoryStruct data;
-			data.memory = NULL;
-			data.size = 0;
-
-			string symbol = itr->first;
-			string url_request = url_common + symbol + ".US?" + "from=" + start_date + "&to=" + end_date + "&api_token=" + api_token + "&period=d";
-			curl_easy_setopt(handle, CURLOPT_URL, url_request.c_str());
-
-			//adding a user agent
-			curl_easy_setopt(handle, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:74.0) Gecko/20100101 Firefox/74.0");
-			curl_easy_setopt(handle, CURLOPT_SSL_VERIFYPEER, 0);
-			curl_easy_setopt(handle, CURLOPT_SSL_VERIFYHOST, 0);
-			
-			curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, write_data);
-			curl_easy_setopt(handle, CURLOPT_WRITEDATA, fp);
-			result = curl_easy_perform(handle);
-			
-			fprintf(fp, "%c", '\n');
-			fclose(fp);
-
-			// check for errors 
-			if (result != CURLE_OK) {
-				fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(result));
-				return -1;
-			}
-
-			curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, write_data2);
-			curl_easy_setopt(handle, CURLOPT_WRITEDATA, (void*)&data);
-
-			// perform, then store the expected code in result
-			result = curl_easy_perform(handle);
-
-			if (result != CURLE_OK)
-			{
-				// if errors have occured, tell us what is wrong with result
-				fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(result));
-				return 1;
-			}
-			
-			stringstream sData;
-			sData.str(data.memory);
-			string sValue, sDate;
-			double dValue = 0;
-			string line;
-			cout << symbol << endl;;
-			while (getline(sData, line)) {
-				size_t found = line.find('-');
-				if (found != std::string::npos)
-				{
-					cout << line << endl;
-					sDate = line.substr(0, line.find_first_of(','));
-					line.erase(line.find_last_of(','));
-					sValue = line.substr(line.find_last_of(',') + 1);
-					dValue = strtod(sValue.c_str(), NULL);
-					cout << sDate << " " << std::fixed << ::setprecision(2) << dValue << endl;
-				}
-			}
-			
-			free(data.memory);
-			data.size = 0;
-		}
-		*/
 
 	
 	else
