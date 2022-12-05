@@ -7,7 +7,7 @@
 #include <locale>
 #include <iomanip>
 #include <fstream>
-//#include <curl/curl.h>
+#include <curl/curl.h>
 #include <map>
 #include "Stocks.h"
 using namespace std;
