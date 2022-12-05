@@ -21,6 +21,14 @@ namespace fre
 		Vector Adjusted_close;
 		Vector volume;
 		Matrix Stock_info;
+		
+		double reported_earnings;
+		double estimated_earnings;
+		double surprise_earnings;
+		double surprise_perecent;
+		string earnings_date;
+		string ticker;
+		
 		int N;
 		
 	  public:
@@ -33,12 +41,20 @@ namespace fre
 		Vector GetClose_price() const { return Close_price; }
 		Vector GetAdjusted_close() const { return Adjusted_close; }
 		Vector Getvolume() const { return volume; }
+		
 		void SetOP(const Vector & OP) { Open_price = OP; }
         void SetHP(const Vector& HP) { High_price = HP; }
         void SetLP(const Vector& LP) { Low_price = LP; }
         void SetCP(const Vector& CP) { Close_price = CP; }
         void SetACP(const Vector& ACP) { Adjusted_close = ACP; }
         void SetVol(const Vector& Vol) { volume = Vol; }
+        
+        void SetReportedEarnings(const double& re) { reported_earnings = re;}
+        void SetEstimatedEarnings(const double& ee) { estimated_earnings = ee;}
+        void SetSurpriseEarnings(const double& se) { surprise_earnings = se;}
+        void SetSurprisePerecent(const double& sp) { surprise_perecent = sp;}
+        void SetTicker(const string& ticker_) { ticker = ticker_}
+        void SetEarningsDate(const string& earnings_date_) { earnings_date = earnings_date_;}
 	};
 
 
