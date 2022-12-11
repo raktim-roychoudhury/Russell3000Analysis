@@ -10,6 +10,30 @@ namespace MatrixOp {
     typedef vector<vector<double>> Matrix;
     typedef vector<vector<string>> Table;
     
+    Matrix ConstMatrix(double c,int nrow, int ncol)
+    {
+        Matrix x;
+        Vector v(ncol);
+        for(i=0;i<nrow;i++)
+        {
+            for(j=0;j<ncol;j++)
+            {
+                v.pushback(c)
+            }
+            x.pushback(v);
+        }
+        return x;
+    }
+	Vector ConstVector(double c,int size)
+	{
+	   Vector x(size)
+        for(Vector::iterator itr=x.begin(); itr!=x.end();++itr)
+        {
+            *itr = c;
+        }
+        return x; 
+	}
+    
     Vector operator*(const Matrix& C, const Vector& V)
     {
         int d = (int)C.size();

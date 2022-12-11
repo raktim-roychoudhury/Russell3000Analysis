@@ -17,4 +17,6 @@ namespace MatrixOp {
 	double operator^(const Vector& V, const Vector& W); // scalar operator
 	ostream& operator<<(ostream& out, Vector& V);	// Overload cout for Vector
 	ostream& operator<<(ostream& out, Matrix& W);	// Overload cout for Matrix
+	Matrix ConstMatrix(double c,int nrow, int ncol);
+	Vector ConstVector(double c,int size);
 }

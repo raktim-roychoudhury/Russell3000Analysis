@@ -17,8 +17,10 @@ class Bootstrap
         //Saved Output
         Matrix AAR; //group x time
         Matrix CAAR; //group x time
-        Matrix AAR_STD; //group x time
-        Matrix CAAR_STD //group x time
+        Vector AAR_STD; //group x 1
+        Vector CAAR_STD; //group x 1
+        Vector Avg_AAR;
+        Vector Avg_CAAR;
         
         vector<string> PullTickers(int index) const;
         Vector Cal_AAR(const vector<string>& sample);
@@ -33,27 +35,41 @@ class Bootstrap
         void RunBootstrap(int T); 
 };
 
-void Bootstrap::RunBootstrap(int T //number of timesteps N)
+void Bootstrap::RunBootstrap(int T //number of timesteps: 2N)
 {
-    Vector AAR;
-    AAR.resize(T);
-    for(int n = 0; n < GroupPtr->GetN(); n++) //iterate through each group
+    Vector AAR_tmp;
+    int N_Group = GroupPtr->GetN();
+    
+    //initialize result matrices
+    AAR = ContMatrix(0,N_Group,T);
+    CAAR = ContMatrix(0,N_Group,T);
+    AAR_STD = ContVector(0,N_Group);
+    CAAR_STD = ContVector(0,N_Group);
+    Avg_AAR = ContVector(0,N_Group);
+    Avg_CAAR = ContVector(0,N_Group);
+    
+    for(int n = 0; n < N_Group ; n++) //iterate through each group
     {
-        AAR = 0; //overload this
+        AAR_tmp = ConstVector(0,T); //overload this
+        
         for(int i = 0;i < N; i++) //iterate through each monte carlo iteration 
         {
             vector<string> sample = PullTickers(n);
             
-            AAR = Cal_AAR(sample);
-            AAR[n] += AAR;
-            AAR_STD[n] += AAR*AAR;
+            AAR_tmp = Cal_AAR(sample);
+            AAR[n] += AAR_tmp;
+            AAR_STD[n] += AAR_tmp^AAR_tmp;
             CAAR[n] += Cal_CAAR(AAR);
-            CAAR_STD += CAAR[n]*CAAR[n];
+            CAAR_STD += CAAR[n]^CAAR[n];
         }
-        AAR[n]/=N; //divide by N later to not lose precision
-        AAR_STD[n] = AAR_STD[n]/N - AAR[n]*AAR[n];
-        CAAR[n]/=N;
-        CAAR_STD[n] = CAAR_STD[n]/N - CAAR[n]*CAAR[n]; //std for each timestep???
+        
+        AAR[n] = 1/N*AAR[n]; //divide by N later to not lose precision
+        CAAR[n] = 1/N*CAAR[n];
+        
+        Avg_AAR[n] = AAR[n]^ContVector(1,T)/T;
+        Avg_CAAR[n] = CAAR[n]^ContVector(1,T)/T;
+        AAR_STD[n] = 1/(N*N_Group)*AAR_STD[n] - Avg_AAR[n]*Avg_AAR[n];
+        CAAR_STD[n] = 1/(N*N_Group)*CAAR_STD[n] - Avg_CAAR[n]*Avg_CAAR[n]; //std for each timestep???
     }
     
 }
