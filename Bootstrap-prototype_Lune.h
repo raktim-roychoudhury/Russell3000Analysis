@@ -1,12 +1,11 @@
 # pragma once
 #include "group-prototype_Lune.h"
+#include "Matrix.h"
 #include <iostream>
 #include <string>
 #include <vector>
 using namespace std;
-typedef vector<double> Vector;
-typedef vector<vector<double>> Matrix;
-typedef vector<vector<string>> Table;
+using namespace MatrixOp;
 
 class Bootstrap
 {
