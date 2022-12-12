@@ -62,7 +62,7 @@ void Bootstrap::RunBootstrap(int T //number of timesteps: 2N)
             {
                 sample = PullTickers(n); 
                 AAR_tmp = Cal_AAR(sample);
-                AAR[n] += AAR_tmp;      // need to overload this operator (Shweta to do)
+                AAR[n] += AAR_tmp;      
                 AAR_STD[n] += AAR_tmp^AAR_tmp;
                 CAAR_tmp = Cal_CAAR(AAR);
                 CAAR[n] += CAAR_tmp;
