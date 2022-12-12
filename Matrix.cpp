@@ -62,14 +62,14 @@ namespace MatrixOp {
         return U;
     }
     
-    Vector operator=(const Vector& V, const Vector& W)
+    Vector& operator=(Vector& V, const Vector& W)
     {
         int d = (int)V.size();
         for (int j = 0; j < d; j++) V[j] = W[j];
         return V;
     }
 
-    Vector operator+=(const Vector& V, const Vector& W)
+    Vector& operator+=(Vector& V, const Vector& W)
     {
         int d = (int)V.size();
         for (int j = 0; j < d; j++) V[j] = V[j] + W[j];
