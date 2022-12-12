@@ -1,4 +1,4 @@
-#include "group-prototype_Lune.h"
+#include "Group.h"
 
 using namespace std;
 
@@ -41,7 +41,7 @@ Groupby_Surprise::~Groupby_Surprise(){
 
 //to be completed
 
-bool Groupby_surprise::cmp_bysurprise(Stock& a, Stock& b) const{
+bool Groupby_surprise::cmp_bysurprise(Stocks& a, Stocks& b) const{
     return (a.GetSurprisePerecent() < b.GetSurprisePerecent());
 }
 
