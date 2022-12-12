@@ -4,72 +4,77 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <cmath>
 using namespace std;
 using namespace MatrixOp;
 
 class Bootstrap
 {
     private:
-        int N = 40;
-        int M = 80;
+        int MCN = 40;   // no. of bootstrap (monte carlo) iterations 
+        int M = 80;     // size of each sample from a group 
         Group* GroupPtr;
         
-        //Saved Output
-        Matrix AAR; //group x time
-        Matrix CAAR; //group x time
-        Vector AAR_STD; //group x 1
+        //populated as part of output of Bootstrap  
+        Matrix AAR; //group x time  
+        Matrix CAAR; //group x time   
+        Vector AAR_STD; //group x 1 
         Vector CAAR_STD; //group x 1
-        Vector Avg_AAR;
-        Vector Avg_CAAR;
+        Vector Avg_AAR; //group x 1
+        Vector Avg_CAAR; //group x 1
         
-        vector<string> PullTickers(int index) const;
-        Vector Cal_AAR(const vector<string>& sample);
-        Vector Cal_CAAR(const Vector& AAR);
-        void Plot() const;
-        
+
     public:
         Bootstrap(const Group* GroupPtr_);
         ~Bootstrap();
-        void SetN(int N_);s
+        vector<string> PullTickers(int index) const; // returns sample of size 80 of beat (0), miss (1), meet)(2) (80 x 1)
+        
+        // we need IWV, we need the earnings announcement date for each stock and returns functions in stock class
+        Vector Cal_AAR(const vector<string>& sample); // return AAR calculation across sample stocks (of 1 sample) for 2N timesteps (2N x 1)
+        Vector Cal_CAAR(const Vector& AAR); // return CAAR calculation across sample stocks (of 1 sample) for 2N timesteps (2N x 1)
+        
+        void Plot() const; 
+        void SetMCN(int N_);
         void SetM(int M_)
-        void RunBootstrap(int T); 
+        void RunBootstrap(int T); // return
 };
 
 void Bootstrap::RunBootstrap(int T //number of timesteps: 2N)
 {
-    Vector AAR_tmp;
-    int N_Group = GroupPtr->GetN();
+        Vector AAR_tmp, CAAR_tmp;
+        String sample;
+        int N_Group = GroupPtr->GetN(); // number of groups. In this case - 3
     
-    //initialize result matrices
-    AAR = ContMatrix(0,N_Group,T);
-    CAAR = ContMatrix(0,N_Group,T);
-    AAR_STD = ContVector(0,N_Group);
-    CAAR_STD = ContVector(0,N_Group);
-    Avg_AAR = ContVector(0,N_Group);
-    Avg_CAAR = ContVector(0,N_Group);
-    
-    for(int n = 0; n < N_Group ; n++) //iterate through each group
-    {
-        AAR_tmp = ConstVector(0,T); //overload this
+        //initialize result matrices to 0s
+        AAR = ConstMatrix(0,N_Group,T);     //group x time 
+        CAAR = ConstMatrix(0,N_Group,T);    //group x time 
+        AAR_STD = ConstVector(0,N_Group);   //group x 1 
+        CAAR_STD = ConstVector(0,N_Group);  //group x 1 
+        Avg_AAR = ConstVector(0,N_Group);   //group x 1 
+        Avg_CAAR = ConstVector(0,N_Group);  //group x 1 
         
-        for(int i = 0;i < N; i++) //iterate through each monte carlo iteration 
+        AAR_tmp.resize(T); // vector of size 2N 
+        CAAR_tmp.resize(T); // vector of size 2N 
+        
+        for(int n = 0; n < N_Group ; n++) //iterate through each group
         {
-            vector<string> sample = PullTickers(n);
+            for(int i = 0;i < MCN; i++) //iterate through each monte carlo iteration (i.e. Bootstrap iteration) 
+            {
+                sample = PullTickers(n); 
+                AAR_tmp = Cal_AAR(sample);
+                AAR[n] += AAR_tmp;      // need to overload this operator (Shweta to do)
+                AAR_STD[n] += AAR_tmp^AAR_tmp;
+                CAAR_tmp = Cal_CAAR(AAR);
+                CAAR[n] += CAAR_tmp;
+                CAAR_STD[n] += CAAR_tmp^CAAR_tmp;
+            }
             
-            AAR_tmp = Cal_AAR(sample);
-            AAR[n] += AAR_tmp;
-            AAR_STD[n] += AAR_tmp^AAR_tmp;
-            CAAR[n] += Cal_CAAR(AAR);
-            CAAR_STD += CAAR[n]^CAAR[n];
+            AAR[n] = (1/MCN)*AAR[n]; //divide by N later to not lose precision
+            CAAR[n] = (1/MCN)*CAAR[n];
+            Avg_AAR[n] = (AAR[n]^ConstVector(1,T))/T;
+            Avg_CAAR[n] = (CAAR[n]^ContVector(1,T))/T;
+            AAR_STD[n] = sqrt((1/(T*MCN)*AAR_STD[n] - Avg_AAR[n]*Avg_AAR[n]));
+            CAAR_STD[n] = sqrt((1/(T*MCN))*CAAR_STD[n] - Avg_CAAR[n]*Avg_CAAR[n]); 
         }
         
-        AAR[n] = 1/N*AAR[n]; //divide by N later to not lose precision
-        CAAR[n] = 1/N*CAAR[n];
-        
-        Avg_AAR[n] = AAR[n]^ContVector(1,T)/T;
-        Avg_CAAR[n] = CAAR[n]^ContVector(1,T)/T;
-        AAR_STD[n] = 1/(N*N_Group)*AAR_STD[n] - Avg_AAR[n]*Avg_AAR[n];
-        CAAR_STD[n] = 1/(N*N_Group)*CAAR_STD[n] - Avg_CAAR[n]*Avg_CAAR[n]; //std for each timestep???
-    }
-    
 }
