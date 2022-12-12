@@ -6,7 +6,7 @@ using namespace std;
 //base Group class
 //default no. of groups = 3
 //constructor
-Group::Group(map<string, Stocks>* data_): stockMapPtr(data_), N_group(3){
+Group::Group(Map* data_): stockMapPtr(data_), N_group(3){
 }
 
 //destructor
@@ -24,13 +24,18 @@ int Group::GetN() const{
 }
 
 //update Stock Map
-void Group::UpdateStockMap(map<string, Stocks>* stockMapPtr_){
+void Group::UpdateStockMap(Map* stockMapPtr_){
     stockMapPtr = stockMapPtr_;
 }
 
 //get Stock Map
-map<string, Stocks>* Group::GetStockMap() const{
+Map* Group::GetStockMap() const{
     return stockMapPtr;
+}
+
+//return pointer to Group_Mapping Table
+Table* Group::GetGroup_Mapping() const{
+    return (&Group_Mapping);
 }
 
 //Create groups
@@ -55,7 +60,7 @@ void Group::CreateGroups(int n){
 }
 
 //create groups, stockMap and no. of groups as parameter
-void Group::CreateGroups(map<string, Stocks>* stockMapPtr_, int n){
+void Group::CreateGroups(Map* stockMapPtr_, int n){
     UpdateStockMap(stockMapPtr_);
     CreateGroups(n);
 }
@@ -71,7 +76,7 @@ vector<string>& Group::operator[] (const string& groupname) const{
 //Groupby_Surprise derived class
 
 //constructor
-Groupby_Surprise::Groupby_Surprise(map<string, Stocks>* stockMapPtr_): Group(map<string, Stocks>* stockMapPtr_){
+Groupby_Surprise::Groupby_Surprise(Map* stockMapPtr_): Group(Map* stockMapPtr_){
 }
 
 //destructor

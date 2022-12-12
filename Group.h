@@ -10,17 +10,18 @@ using namespace std;
 typedef vector<double> Vector;
 typedef vector<vector<double>> Matrix;
 typedef vector<vector<string>> Table;
+typedef map<string, Stocks> Map;
 
 class Group
 {
     protected:
         //data members
         Table Group_Mapping; //table of tickers
-        map<string,Stocks>* stockMapPtr;
+        Map* stockMapPtr;
         int N_Group;
         
         //constructor
-        Group(map<string,Stocks>* data_);
+        Group(Map* data_);
         
         //pure virtual compare function to sort stocks by attribute
         virtual bool compare(const Stocks& a,const Stocks& b) const = 0;
@@ -34,11 +35,14 @@ class Group
         int GetN() const;
         
         //get, set stock map
-        map<string,Stocks>* GetStockMap() const
+        Map* GetStockMap() const
         void UpdateStockMap(map<string, Stocks>* stockMapPtr_);
         
+        //get Group Vector Pointer
+        Table* GetGroup_Mapping() const;
+        
         //create Groups
-        void CreateGroups;
+        void CreateGroups();
         void CreateGroups(int n);
         void CreateGroups(map<string, Stocks>* stockMapPtr_, int n);
         
@@ -54,7 +58,7 @@ class Groupby_Surprise: public Group
         
     public:
         //constructor
-        Groupby_Surprise(map<string,Stocks>* stockMapPtr_);
+        Groupby_Surprise(Map* stockMapPtr_);
         
         //destructor
         ~Groupby_Surprise();
