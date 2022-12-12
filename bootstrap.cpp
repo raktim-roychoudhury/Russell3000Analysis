@@ -68,8 +68,16 @@ namespace fre
     }
     
     
-    Vector Cal_CAAR(const Vector& AAR); // return CAAR calculation across sample stocks (of 1 sample) for 2N timesteps (2N x 1)
-            
+    Vector Bootstrap :: Cal_CAAR(const Vector& AAR) // return CAAR calculation across sample stocks (of 1 sample) for 2N timesteps (2N x 1)
+    {
+        Vector CAAR;
+        CAAR.pushback(AAR[0]);
+        for(int i = 1; i < AAR.size(); i++)
+        {
+            CAAR.pushback(CAAR[i-1]+AAR[i]);
+        }
+        return CAAR;
+    }
     
     
     void Bootstrap::RunBootstrap(int T //number of timesteps: 2N)
