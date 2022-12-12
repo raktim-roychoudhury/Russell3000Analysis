@@ -27,6 +27,7 @@ class Stocks
 		Vector Close_price;
 		Vector Adjusted_close;
 		Vector volume;
+		Vector pct_returns;
 		Matrix Stock_info;
 		
 		double reported_earnings;
@@ -136,14 +137,9 @@ void* myrealloc(void* ptr, size_t size)
 }
 */
 
-int write_data(void* ptr, int size, int nmemb, void* data)
+void write_to_stock(stringstream &sData, Stocks* stock)
 {
 	//the amount of data which libcurl passed to the function
-	size_t realsize = size * nmemb;
-	
-	//change the data type of the "data" variable passed to the function
-	Stocks* stock = (Stocks*)data;
-	char* stream = (char*)ptr;
 	
 	String Date;
 	Vector Open_price;
@@ -153,15 +149,12 @@ int write_data(void* ptr, int size, int nmemb, void* data)
 	Vector Adjusted_close;
 	Vector volume;
 	
-	stringstream sData;
-	sData.str(stream);
-	
 	string sDate, sOpen, sHigh, sLow, sClose, sAdjClose, sVolume;
 
 	string line;
 	
 	while (getline(sData, line)) {
-		size_t found = line.find('-');
+		unsigned long long found = line.find('-');
 		if (found != std::string::npos)
 		{
 			//Date,Open,High,Low,Close,Adjusted_close,Volume
@@ -203,11 +196,34 @@ int write_data(void* ptr, int size, int nmemb, void* data)
 	stock->SetACP(Adjusted_close);
 	stock->SetVol(volume);
 	
-	//return the size of data which libcurl passed to not cause any error
-	return realsize;
+	
 }
 
+struct MemoryStruct {
+	char* memory;
+	size_t size;
+};
 
+void* myrealloc(void* ptr, size_t size)
+{
+	if (ptr)
+		return realloc(ptr, size);
+	else
+		return malloc(size);
+}
+
+int write_data2(void* ptr, size_t size, size_t nmemb, void* data)
+{
+	size_t realsize = size * nmemb;
+	struct MemoryStruct* mem = (struct MemoryStruct*)data;
+	mem->memory = (char*)myrealloc(mem->memory, mem->size + realsize + 1);
+	if (mem->memory) {
+		memcpy(&(mem->memory[mem->size]), ptr, realsize);
+		mem->size += realsize;
+		mem->memory[mem->size] = 0;
+	}
+	return realsize;
+}
 
 void write2file(map<string, Stocks> &data)
 {
@@ -230,7 +246,6 @@ void write2file(map<string, Stocks> &data)
 		fout<<endl<<endl;
 		
 	}
-	
 }
 
 
@@ -245,29 +260,29 @@ void FetchData(map<string, Stocks> &stock_map)
 
 	CURLcode result;
 
+	
 	// set up the program environment that libcurl needs 
 	curl_global_init(CURL_GLOBAL_ALL);
-
+	
 	// curl_easy_init() returns a CURL easy handle 
 	handle = curl_easy_init();
-
+	
 	// if everything's all right with the easy handle... 
 	if (handle)
 	{
 		string url_common = "https://eodhistoricaldata.com/api/eod/";
-		string start_date = "2022-11-01";
-		string end_date = "2022-11-30";
+		string start_date = "2022-03-01";
+		string end_date = "2022-12-01";
 		string api_token = "638d6a442c56c0.76328612";  // You must replace this API token with yours
-
 		
-		struct MemoryStruct data;
-		data.memory = NULL;
-		data.size = 0;
-
 		auto itr = stock_map.begin();
 		
 		for(; itr != stock_map.end(); itr++)
 		{
+			struct MemoryStruct data;
+			data.memory = NULL;
+			data.size = 0;
+			
 			string symbol = itr->first;
 			cout<<"loading "<<symbol<<"...\n";
 			string url_request = url_common + symbol + ".US?" + "from=" + start_date + "&to=" + end_date + "&api_token=" + api_token + "&period=d";
@@ -285,15 +300,22 @@ void FetchData(map<string, Stocks> &stock_map)
 			
 			
 			//store the data in the Stock class using write_data function
-			curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, write_data);
-			curl_easy_setopt(handle, CURLOPT_WRITEDATA, ticker);
+			curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, write_data2);
+			curl_easy_setopt(handle, CURLOPT_WRITEDATA, (void*)&data);
 	
 			result = curl_easy_perform(handle);	
 			if (result != CURLE_OK)
 			{
 				// if errors have occured, tell us what is wrong with result
+				cout<<"\n\n\nError here\n\n\n";
 				fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(result));
 			}
+			
+			stringstream sData;
+			sData.str(data.memory);
+			write_to_stock(sData, ticker);
+			free(data.memory);
+			
 		}
 		
 	}	
@@ -305,6 +327,7 @@ void FetchData(map<string, Stocks> &stock_map)
 		//return -1;
 	}
 
+	
 	// cleanup since you've used curl_easy_init  
 	curl_easy_cleanup(handle);
 
@@ -317,7 +340,7 @@ int main(void)
 {
 	map<string, Stocks> data;
 	
-	populateSymbolVector(data);
+	LoadEarnings(data);
 	
 	FetchData(data);
 	write2file(data);

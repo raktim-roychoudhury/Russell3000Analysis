@@ -11,6 +11,8 @@ namespace fre
 	typedef vector<double> Vector;
 	typedef vector<Vector> Matrix;
 	
+	vector<string> GenerateDates();
+	
 	class Stocks
 	{
 	  protected:
@@ -21,6 +23,7 @@ namespace fre
 		Vector Close_price;
 		Vector Adjusted_close;
 		Vector volume;
+		Vector pct_returns;
 		Matrix Stock_info;
 		
 		double reported_earnings;
@@ -28,9 +31,13 @@ namespace fre
 		double surprise_earnings;
 		double surprise_perecent;
 		string earnings_date;
+		string start_date;
+		string end_date;
 		string ticker;
 		
 		int N;
+		int start_index;
+		int end_index;
 		
 	  public:
 		Stocks(){}
@@ -42,6 +49,7 @@ namespace fre
 		Vector GetClose_price() const { return Close_price; }
 		Vector GetAdjusted_close() const { return Adjusted_close; }
 		Vector Getvolume() const { return volume; }
+		Vector GetReturns() const {return pct_returns;}
 		
 		void SetDate(const String & dt) { Date = dt; }
 		void SetOP(const Vector & OP) { Open_price = OP; }
@@ -50,6 +58,8 @@ namespace fre
         void SetCP(const Vector& CP) { Close_price = CP; }
         void SetACP(const Vector& ACP) { Adjusted_close = ACP; }
         void SetVol(const Vector& Vol) { volume = Vol; }
+        void SetN(int N_, String &DateList);
+        void CalculateReturns();
         
         void SetReportedEarnings(const double& re) { reported_earnings = re;}
         void SetEstimatedEarnings(const double& ee) { estimated_earnings = ee;}
@@ -57,6 +67,7 @@ namespace fre
         void SetSurprisePerecent(const double& sp) { surprise_perecent = sp;}
         void SetTicker(const string& ticker_) { ticker = ticker_;}
         void SetEarningsDate(const string& earnings_date_) { earnings_date = earnings_date_;}
+        void SetDates(String dateslist);
         
         
         double GetReportedEarnings() { return reported_earnings; }
@@ -65,6 +76,10 @@ namespace fre
         double GetSurprisePerecent() { return surprise_perecent; }
         string GetTicker(){ return ticker;}
         string GetEarningsDate() { return earnings_date; }
+        string GetStartDate() { return start_date;}
+        string GetEndDate() { return end_date;}
+        int GetStartIndex() { return start_index; }
+        int GetEndIndex() { return end_index; }
 	};
 
 

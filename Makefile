@@ -1,17 +1,17 @@
 CC = g++
-CFLAGS = -Wall -ggdb3 -std=c++11
+CFLAGS = -Wall -ggdb3 -std=c++11 -lcurl
 
-Project: Main.o  
-	$(CC) $(CFLAGS) -o Project Main.o ReadLoadData.o bootstrap.o
+Project: Main.o ReadLoadData.o Stocks.o
+	$(CC) $(CFLAGS) -o Project Main.o ReadLoadData.o Stocks.o
 
-Main.o: Main.cpp Stocks.h
+Main.o: Stocks.h ReadLoadData.h Main.cpp
 	$(CC) $(CFLAGS) -c Main.cpp
 	
-ReadLoadData.o: ReadLoadData.cpp Stocks.h
+ReadLoadData.o: Stocks.h ReadLoadData.h ReadLoadData.cpp 
 	$(CC) $(CFLAGS) -c ReadLoadData.cpp
 	
-bootstrap.o: Stocks.h bootstrap.h
-	$(CC) $(CFLAGS) -c bootstrap.cpp
+Stocks.o: Stocks.h Stocks.cpp
+	$(CC) $(CFLAGS) -c Stocks.cpp
 
 clean:
 	rm -rf  Project *.o
