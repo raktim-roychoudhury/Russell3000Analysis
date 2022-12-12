@@ -5,9 +5,11 @@ using namespace std;
 
 //base Group class
 //default no. of groups = 3
+//constructor
 Group::Group(map<string, Stocks>* data_): stockMapPtr(data_), N_group(3){
 }
 
+//destructor
 Group::~Group(){
 }
 
@@ -16,6 +18,7 @@ void Group::SetN(int n){
     N_group = n;
 }
 
+//get no. of groups
 int Group::GetN() const{
     return N_group;
 }
@@ -45,27 +48,37 @@ void Group::CreateGroups(){
     }
 }
 
+//create groups, no. of groups as parameter
 void Group::CreateGroups(int n){
     SetN(n);
     CreateGroups();
 }
 
+//create groups, stockMap and no. of groups as parameter
 void Group::CreateGroups(map<string, Stocks>* stockMapPtr_, int n){
     UpdateStockMap(stockMapPtr_);
     CreateGroups(n);
 }
 
+//overloaded subscript operator to return by groupname
+vector<string>& Group::operator[] (const string& groupname) const{
+    if (strcmp(groupname, string("Beat")) == true) return Group_Mapping[0];
+    else if (strcmp(groupname, string("Meet")) == true) return GroupMapping[1];
+    else if (strcmp(groupname, string("Miss")) == true) return GroupMapping[2];
+    return NULL;
+}
+
 //Groupby_Surprise derived class
 
-
+//constructor
 Groupby_Surprise::Groupby_Surprise(map<string, Stocks>* stockMapPtr_): Group(map<string, Stocks>* stockMapPtr_){
 }
 
+//destructor
 Groupby_Surprise::~Groupby_Surprise(){
 }
 
-//to be completed
-
+//compare stocks by surprise percent
 bool Groupby_surprise::compare(const Stocks& a, const Stocks& b) const{
     return (a.GetSurprisePerecent() < b.GetSurprisePerecent());
 }

@@ -22,19 +22,28 @@ class Group
         //constructor
         Group(map<string,Stocks>* data_);
         
+        //pure virtual compare function to sort stocks by attribute
         virtual bool compare(const Stocks& a,const Stocks& b) const = 0;
+        
+        //destructor
         virtual ~Group() = 0;
         
     public:
+        //get, set number of groups
         void SetN(int n);
         int GetN() const;
         
+        //get, set stock map
         map<string,Stocks>* GetStockMap() const
         void UpdateStockMap(map<string, Stocks>* stockMapPtr_);
         
+        //create Groups
         void CreateGroups;
         void CreateGroups(int n);
         void CreateGroups(map<string, Stocks>* stockMapPtr_, int n);
+        
+        //overloaded subscript operator to return by group name
+        vector<string>& operator[] (const string& groupname) const;
 };
 
 class Groupby_Surprise: public Group
@@ -44,6 +53,9 @@ class Groupby_Surprise: public Group
         bool compare(const Stocks& a,const Stocks& b) const;
         
     public:
+        //constructor
         Groupby_Surprise(map<string,Stocks>* stockMapPtr_);
+        
+        //destructor
         ~Groupby_Surprise();
 }
