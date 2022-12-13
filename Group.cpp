@@ -1,12 +1,9 @@
 #include "Group.h"
 
-using namespace std;
-
-
 //base Group class
 //default no. of groups = 3
 //constructor
-Group::Group(Map* data_): stockMapPtr(data_), N_group(3){
+Group::Group(Map* data_):stockMapPtr(data_), N_group(3){
 }
 
 //destructor
@@ -29,7 +26,7 @@ void Group::UpdateStockMap(Map* stockMapPtr_){
 }
 
 //get Stock Map
-Map* Group::GetStockMap() const{
+Map* Group::GetStockMap(){
     return stockMapPtr;
 }
 
@@ -41,7 +38,7 @@ Table* Group::GetGroup_Mapping() const{
 //Create groups
 void Group::CreateGroups(){
     vector<Stocks> stockVector;
-    for (auto it = stockMapPtr->begin(); it != stockMapPtr.end(); ++it) stockVector.push_back(it->second);
+    for (auto it = stockMapPtr->begin(); it != stockMapPtr->end(); ++it) stockVector.push_back(it->second);
     sort(stockVector.begin(), stockVector.end(), compare, reverse = true);
     
     int NoOfStocks = (int)(stockVector.size()/N_group);
@@ -70,13 +67,13 @@ vector<string>& Group::operator[] (const string& groupname) const{
     if (strcmp(groupname, string("Beat")) == true) return Group_Mapping[0];
     else if (strcmp(groupname, string("Meet")) == true) return GroupMapping[1];
     else if (strcmp(groupname, string("Miss")) == true) return GroupMapping[2];
-    return NULL;
+    return nullptr;
 }
 
 //Groupby_Surprise derived class
 
 //constructor
-Groupby_Surprise::Groupby_Surprise(Map* stockMapPtr_): Group(Map* stockMapPtr_){
+Groupby_Surprise::Groupby_Surprise(Map* stockMapPtr_): Group(stockMapPtr_){
 }
 
 //destructor
@@ -84,7 +81,7 @@ Groupby_Surprise::~Groupby_Surprise(){
 }
 
 //compare stocks by surprise percent
-bool Groupby_surprise::compare(const Stocks& a, const Stocks& b) const{
+bool Groupby_surprise::compare(Stocks& a, Stocks& b){
     return (a.GetSurprisePerecent() < b.GetSurprisePerecent());
 }
 

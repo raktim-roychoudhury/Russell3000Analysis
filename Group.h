@@ -6,11 +6,12 @@
 #include <algorithm>
 #include "Stocks.h"
 using namespace std;
+using namespace fre;
 
 typedef vector<double> Vector;
 typedef vector<vector<double>> Matrix;
 typedef vector<vector<string>> Table;
-typedef map<string, Stocks> Map;
+typedef map<string,Stocks> Map;
 
 class Group
 {
@@ -24,7 +25,7 @@ class Group
         Group(Map* data_);
         
         //pure virtual compare function to sort stocks by attribute
-        virtual bool compare(const Stocks& a,const Stocks& b) const = 0;
+        virtual bool compare(const Stocks& a,const Stocks& b) = 0;
         
         //destructor
         virtual ~Group() = 0;
@@ -35,16 +36,16 @@ class Group
         int GetN() const;
         
         //get, set stock map
-        Map* GetStockMap() const
-        void UpdateStockMap(map<string, Stocks>* stockMapPtr_);
+        Map* GetStockMap() const;
+        void UpdateStockMap(Map* stockMapPtr_);
         
         //get Group Vector Pointer
-        Table* GetGroup_Mapping() const;
+        Table* GetGroup_Mapping();
         
         //create Groups
         void CreateGroups();
         void CreateGroups(int n);
-        void CreateGroups(map<string, Stocks>* stockMapPtr_, int n);
+        void CreateGroups(Map* stockMapPtr_, int n);
         
         //overloaded subscript operator to return by group name
         vector<string>& operator[] (const string& groupname) const;
@@ -54,7 +55,7 @@ class Groupby_Surprise: public Group
 {
     //comparator to sort stocks by attribute
     protected:
-        bool compare(const Stocks& a,const Stocks& b) const;
+        bool compare(const Stocks& a,const Stocks& b);
         
     public:
         //constructor
@@ -62,4 +63,4 @@ class Groupby_Surprise: public Group
         
         //destructor
         ~Groupby_Surprise();
-}
+};
