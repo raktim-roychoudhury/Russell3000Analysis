@@ -90,10 +90,9 @@ namespace fre
     }
 
     
-    void Bootstrap::RunBootstrap(int T //number of timesteps: 2N)
+    void Bootstrap::RunBootstrap(int T) //number of timesteps: 2N)
     {
         Vector AAR_tmp, CAAR_tmp;
-        String sample;
         int N_Group = GroupPtr->GetN(); // number of groups. In this case - 3
     
         //initialize result matrices to 0s
@@ -107,23 +106,22 @@ namespace fre
         
         for(int n = 0; n < N_Group ; n++) //iterate through each group
         {
-            for(int i = 0;i < MCN; i++) //iterate through each monte carlo iteration (i.e. Bootstrap iteration) 
+            for(int i = 0;i < MCN; i++) //iterate through each monte carlo iteration (i.e. Bootstrap iteration 1-40) 
             {
-                // sample = PullTickers(n); 
                 AAR_tmp = Cal_AAR(n);
-                AAR[n] += AAR_tmp;      
-                AAR_STD[n] += AAR_tmp^AAR_tmp;
-                CAAR_tmp = cumsum(AAR_tmp);
-                CAAR[n] += CAAR_tmp;
-                CAAR_STD[n] += CAAR_tmp^CAAR_tmp;
+                Avg_AAR[n] += AAR_tmp;      
+                AAR_STD[n] += AAR_tmp*AAR_tmp;
+                Avg_CAAR_tmp = cumsum(AAR_tmp);
+                Avg_CAAR[n] += CAAR_tmp;
+                CAAR_STD[n] += CAAR_tmp*CAAR_tmp;
             }
             
-            AAR[n] = (1/MCN)*AAR[n]; //divide by N later to not lose precision
-            CAAR[n] = (1/MCN)*CAAR[n];
+            Avg_AAR[n] = (1/MCN)*Avg_AAR[n]; 
+            Avg_CAAR[n] = (1/MCN)*Avg_CAAR[n];
             // Avg_AAR[n] = (AAR[n]^ConstVector(1,T))/T; don't need to average across time 
             // Avg_CAAR[n] = (CAAR[n]^ContVector(1,T))/T;
-            AAR_STD[n] = VSQRT((1/(MCN)*AAR_STD[n] - AAR[n]*AAR[n]));
-            CAAR_STD[n] = VSQRT((1/(MCN))*CAAR_STD[n] - CAAR[n]*CAAR[n]); 
+            AAR_STD[n] = VSQRT((1/(MCN)*AAR_STD[n] - Avg_AAR[n]*Avg_AAR[n]));
+            CAAR_STD[n] = VSQRT((1/(MCN))*CAAR_STD[n] - Avg_CAAR[n]*Avg_CAAR[n]); 
         }
         
     }

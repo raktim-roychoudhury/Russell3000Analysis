@@ -108,12 +108,12 @@ namespace MatrixOp {
         return U;
     }
 
-    Vector operator^(const Vector& V, const Vector& W)
+    double operator^(const Vector& V, const Vector& W)
     {
+        double sum = 0.0;
         int d = (int)V.size();
-        Vector U(d);
-        for (int j = 0; j < d; j++) U[j] = V[j] * W[j];
-        return U;
+        for (int j = 0; j < d; j++) sum = sum + V[j] * W[j];
+        return sum;
     }
 
     // overload cout for vector, cout every element in the vector
