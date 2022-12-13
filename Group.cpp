@@ -83,14 +83,14 @@ void Groupby_Surprise::CreateGroups(){
 
 //create groups, no. of groups as parameter
 void Groupby_Surprise::CreateGroups(int n){
-    SetN(n);
-    CreateGroups();
+    this->SetN(n);
+    this->CreateGroups();
 }
 
 //create groups, stockMap and no. of groups as parameter
 void Groupby_Surprise::CreateGroups(Map* stockMapPtr_, int n){
-    UpdateStockMap(stockMapPtr_);
-    CreateGroups(n);
+    this->UpdateStockMap(stockMapPtr_);
+    this->CreateGroups(n);
 }
 
 

@@ -22,13 +22,11 @@ class Group
         int N_group;
         vector<string> Group_Names;
         
-        bool (*cmp)(Stocks& a, Stocks& b);
-        
         //constructor
         Group(Map* data_);
         
         //destructor
-        virtual ~Group() = 0;
+        virtual ~Group();
         
     public:
         //get, set number of groups
@@ -47,7 +45,7 @@ class Group
         Table* GetGroup_Mapping();
         
         //create Groups
-        virtual void CreateGroups() = 0;
+        virtual void CreateGroups();
         virtual void CreateGroups(int n);
         virtual void CreateGroups(Map* stockMapPtr_, int n);
         
@@ -57,10 +55,7 @@ class Group
 
 class Groupby_Surprise: public Group
 {
-    //comparator to sort stocks by attribute
-    //protected:
-        //bool compare(Stocks& a,Stocks& b);
-        
+
     public:
         //constructor
         Groupby_Surprise(Map* stockMapPtr_);
