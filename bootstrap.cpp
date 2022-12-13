@@ -7,21 +7,23 @@
 #include <iomanip>
 #include <cassert>
 #include <map>
-include <chrono>
+#include <chrono>
 #include <time.h>
+#include <random>
 #include<algorithm>
 #include<iterator>
 #include "Stocks.h"
 #include "bootstrap.h"
+using namespace MatrixOp;
 
 namespace fre
 {
 
-    Vector Bootstrap :: generateSample(int gr_n) // To be unit tested - with integration 
+    String Bootstrap :: generateSample(int gr_n) // To be unit tested - with integration 
     {
         int max_size = 1000;
-        Vector grouptickers(max_size); 
-        grouptickers = GroupPtr[gr_n];
+        String grouptickers(max_size); 
+        grouptickers = (GroupPtr->GetGroup_Mapping())[gr_n];
         String W(M);
         vector<int> numbers;
         vector<int> sample;
@@ -66,7 +68,7 @@ namespace fre
     
     Vector Bootstrap :: AbnormRet(string ticker) // To be unit tested - with integration 
     {
-        Vector AbnormReturn(T);
+        Vector AbnormReturn(myMap[ticker].GetN());
         int start, end;
         start = myMap[ticker].GetStartIndex();
         end = myMap[ticker].GetEndIndex();
@@ -81,9 +83,9 @@ namespace fre
     // return AAR calculation across sample stocks (of 1 sample) for 2N timesteps (2N x 1)
     Vector Bootstrap :: Cal_AAR(int gr_n) // To be unit tested - with integration 
     {
-        Vector sample(M);
-        Vector Ave = ConstVector(0,T);
-        sample = generateSample(n);
+        String sample(M);
+        Vector Ave = ConstVector(0,myMap[ticker]->GetN());
+        sample = generateSample(gr_n);
         for(int i = 0; i< M; i++)
         {
             Ave += AbnormRet(sample[i]);    // operator overloading
@@ -100,7 +102,7 @@ namespace fre
 
         Vector AAR_tmp, CAAR_tmp;
         int N_Group = GroupPtr->GetN(); // number of groups. In this case - 3
-    
+        int T = myMap[ticker].GetN();
         //initialize result matrices to 0s
         Avg_AAR = ConstMatrix(0,N_Group,T);     //group x time 
         Avg_CAAR = ConstMatrix(0,N_Group,T);    //group x time 
@@ -109,7 +111,7 @@ namespace fre
         
         AAR_tmp.resize(T); // vector of size 2N 
         CAAR_tmp.resize(T); // vector of size 2N 
-        
+        Avg_CAAR_tmp.resize(T); 
         for(int n = 0; n < N_Group ; n++) //iterate through each group
         {
             for(int i = 0;i < MCN; i++) //iterate through each monte carlo iteration (i.e. Bootstrap iteration 1-40) 
