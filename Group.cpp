@@ -37,17 +37,17 @@ void Group::UpdateStockMap(Map* stockMapPtr_){
 }
 
 //get Stock Map
-Map* Group::GetStockMap() const{
-    return stockMapPtr;
+Map Group::GetStockMap() const{
+    return *stockMapPtr;
 }
 
 //return pointer to Group_Mapping Table
-Table* Group::GetGroup_Mapping(){
-    return (&Group_Mapping);
+Table Group::GetGroup_Mapping(){
+    return (Group_Mapping);
 }
 
 //overloaded subscript operator to return by groupname
-vector<string>& Group::operator[] (const string& groupname){
+vector<string> Group::operator[] (const string& groupname){
     if (groupname == Group_Names[0]) return Group_Mapping[0];
     else if (groupname == Group_Names[1]) return Group_Mapping[1];
     else if (groupname == Group_Names[2]) return Group_Mapping[2];
@@ -68,7 +68,7 @@ bool compare(Stocks& a, Stocks&b){
 }
 
 //Create groups by suprise percent
-void Groupby_Surprise::CreateGroups(){
+void Groupby_Surprise::CreateGroups() {
     vector<Stocks> stockVector;
     for (auto it = stockMapPtr->begin(); it != stockMapPtr->end(); ++it) stockVector.push_back(it->second);
     sort(stockVector.begin(), stockVector.end(), compare);

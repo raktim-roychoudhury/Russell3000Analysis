@@ -22,6 +22,8 @@ class Group
         int N_group;
         vector<string> Group_Names;
         
+        bool (*cmp)(Stocks& a, Stocks& b);
+        
         //constructor
         Group(Map* data_);
         
@@ -38,24 +40,27 @@ class Group
         vector<string> GetGroupNames() const;
         
         //get, set stock map
-        Map* GetStockMap() const;
+        Map GetStockMap() const;
         void UpdateStockMap(Map* stockMapPtr_);
         
         //get Group Vector Pointer
-        Table* GetGroup_Mapping();
+        Table GetGroup_Mapping();
         
         //create Groups
-        virtual void CreateGroups();
-        virtual void CreateGroups(int n);
-        virtual void CreateGroups(Map* stockMapPtr_, int n);
+        // virtual void CreateGroups() = 0;
+        // virtual void CreateGroups(int n);
+        // virtual void CreateGroups(Map* stockMapPtr_, int n);
         
         //overloaded subscript operator to return by group name
-        vector<string>& operator[] (const string& groupname);
+        vector<string> operator[] (const string& groupname);
 };
 
 class Groupby_Surprise: public Group
 {
-
+    //comparator to sort stocks by attribute
+    //protected:
+        //bool compare(Stocks& a,Stocks& b);
+        
     public:
         //constructor
         Groupby_Surprise(Map* stockMapPtr_);
