@@ -20,6 +20,16 @@ int Group::GetN() const{
     return N_group;
 }
 
+//set group names
+void Group::SetGroupNames(vector<string>& names){
+    Group_Names = names;
+}
+
+//get group names
+vector<string> Group::GetGroupNames() const{
+    return Group_Names;
+}
+
 //update Stock Map
 void Group::UpdateStockMap(Map* stockMapPtr_){
     stockMapPtr = stockMapPtr_;
@@ -38,6 +48,7 @@ Table* Group::GetGroup_Mapping() const{
 //Create groups
 void Group::CreateGroups(){
     vector<Stocks> stockVector;
+    Group_Names = {"Beat", "Meet", "Miss"};
     for (auto it = stockMapPtr->begin(); it != stockMapPtr->end(); ++it) stockVector.push_back(it->second);
     sort(stockVector.begin(), stockVector.end(), compare, reverse = true);
     

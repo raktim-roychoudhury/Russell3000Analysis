@@ -20,6 +20,7 @@ class Group
         Table Group_Mapping; //table of tickers
         Map* stockMapPtr;
         int N_Group;
+        vector<string> Group_Names;
         
         //constructor
         Group(Map* data_);
@@ -34,6 +35,10 @@ class Group
         //get, set number of groups
         void SetN(int n);
         int GetN() const;
+        
+        //get, set group names
+        void SetGroupNames(vector<string>& names);
+        vector<string> GetGroupNames() const;
         
         //get, set stock map
         Map* GetStockMap() const;
