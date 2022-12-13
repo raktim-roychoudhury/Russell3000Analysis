@@ -15,10 +15,12 @@
 #include "ReadLoadData.h"
 #include "Stocks.h"
 #include "Group.h"
+#include "bootstrap.h"
+#include "Matrix.h"
 using namespace std;
 using namespace std::chrono;
 //using namespace 
-
+using namespace fre;
 // vector output print function 
 void print_v(vector<double> v)
 {
@@ -55,6 +57,7 @@ int main()
     int temp,x,group, test =0;  // menu option and number of days 
     string tick;
     double N=0;
+    int integer1;
     
     map<string, Stocks> GlobalStockMap;
     Stocks Russel;
@@ -62,7 +65,6 @@ int main()
     LoadEarnings(GlobalStockMap);
     
     String DateList = GenerateDates();
-    SetN(30, GlobalStockMap, DateList);
     
     // FetchData(GlobalStockMap);
     // write2file(GlobalStockMap);
@@ -73,6 +75,7 @@ int main()
     cout << "groups created" << endl;
     Table groupTable = gobj.GetGroup_Mapping();
     cout << "Table created" << endl;
+    
     
     //temporary vector 
     vector<double> v;
@@ -102,11 +105,14 @@ int main()
         {
             case 1:
             {
+                cout << "option 1 selected" << endl;
+                cout << "N set for all stocks" << endl;
                 while(test==0)
                 {
                     cout<<"Enter N value between 60 and 90: "<<endl;
                     cin>>N;
-                    int integer1 = (int) N;
+                    integer1 = (int) N;
+                    SetN(integer1, GlobalStockMap, DateList);
                     if (integer1 != N)
                     {
                         cout<<"Error, please enter an integer value error"<<endl;
@@ -170,6 +176,8 @@ int main()
             }
             case 3:
             {
+                Bootstrap(&gobj, &GlobalStockMap);
+                cout << "Bootstrap object created" << endl;
                 if(N>=60 && N<=90)
                 {
                     while(test==0)
@@ -178,6 +186,7 @@ int main()
                         cout<< "Please select appropriate group number: "<<endl; 
                         cin>>group;
                         int integer2 = (int) group;
+                        
                         if(integer2 != group)
                         {
                             cout<<"Invalid Input field"<<endl;
