@@ -127,6 +127,23 @@ namespace fre
             AAR_STD[n] = VSQRT((1/(MCN)*AAR_STD[n] - Avg_AAR[n]*Avg_AAR[n]));
             CAAR_STD[n] = VSQRT((1/(MCN))*CAAR_STD[n] - Avg_CAAR[n]*Avg_CAAR[n]); 
         }
-    } 
+    }
+    
+    Vector Bootstrap::GetAAR(int gr_index) const
+    {
+        return Avg_AAR[gr_index];
+    }
+    Vector Bootstrap::GetAAR_STD(int gr_index) const
+    {
+        return AAR_STD[gr_index];
+    }
+    Vector Bootstrap::GetCAAR(int gr_index) const
+    {
+        return Avg_CAAR[gr_index];
+    }
+    Vector Bootstrap::GetCAAR_STD(int gr_index) const
+    {
+        return CAAR_STD[gr_index];
+    }
 }
 
