@@ -34,7 +34,6 @@ namespace MatrixOp {
         return x; 
 	}
     
-    
     Vector operator*(const Matrix& C, const Vector& V)
     {
         int d = (int)C.size();

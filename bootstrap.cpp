@@ -45,7 +45,7 @@ namespace fre
     }
     
     // return CAAR calculation across sample stocks (of 1 sample) for 2N timesteps (2N x 1)
-    Vector Bootstrap :: cumsum(const Vector& V) //
+    Vector Bootstrap :: cumsum(const Vector& V) // unti tested
     {
         int d = (int)V.size();
         Vector U(d);
@@ -97,12 +97,10 @@ namespace fre
         int N_Group = GroupPtr->GetN(); // number of groups. In this case - 3
     
         //initialize result matrices to 0s
-        AAR = ConstMatrix(0,N_Group,T);     //group x time 
-        CAAR = ConstMatrix(0,N_Group,T);    //group x time 
+        Avg_AAR = ConstMatrix(0,N_Group,T);     //group x time 
+        Avg_CAAR = ConstMatrix(0,N_Group,T);    //group x time 
         AAR_STD = ConstMatrix(0,N_Group,T);   //group x time 
         CAAR_STD = ConstMatrix(0,N_Group,T); //group x time 
-        //Avg_AAR = ConstVector(0,N_Group);   //group x 1 
-        //Avg_CAAR = ConstVector(0,N_Group);  //group x 1 
         
         AAR_tmp.resize(T); // vector of size 2N 
         CAAR_tmp.resize(T); // vector of size 2N 

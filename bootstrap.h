@@ -36,6 +36,7 @@ namespace fre
             void SetMCN(int N_);
             void SetM(int M_)
             void RunBootstrap(int T); // return
+            
     };
     
     
