@@ -12,6 +12,9 @@
 //#include ".h"         //header files 
 //#include ".h"
 //#include ".h"
+#include "ReadLoadData.h"
+#include "Stocks.h"
+#include "Group.h"
 using namespace std;
 using namespace std::chrono;
 //using namespace 
@@ -37,6 +40,14 @@ int main()
     int temp,x,group, test =0;  // menu option and number of days 
     string tick;
     double N=0;
+    
+    map<string, Stocks> stockData;
+    
+    LoadEarnings(&stockData);
+    
+    Groupby_Surprise group(stockData);
+    group.CreateGroups();
+    Table* groupTable = group.GetGroup_Mapping();
     
     //temporary vector 
     vector<double> v;
