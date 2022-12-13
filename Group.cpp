@@ -46,39 +46,11 @@ Table* Group::GetGroup_Mapping(){
     return (&Group_Mapping);
 }
 
-//Create groups
-void Group::CreateGroups(){
-    vector<Stocks> stockVector;
-    for (auto it = stockMapPtr->begin(); it != stockMapPtr->end(); ++it) stockVector.push_back(it->second);
-    sort(stockVector.begin(), stockVector.end(), compare, reverse = true);
-    
-    int NoOfStocks = (int)(stockVector.size()/N_group);
-    
-    for (int i = 0; i < N_group; ++i){
-        for (int j = i * NoOfStocks; j < min(i + NoOfStocks, int(stockVector.size())); ++j){
-            Group_Mapping[i].push_back(stockVector[j].GetTicker());
-        }
-    }
-}
-
-//create groups, no. of groups as parameter
-void Group::CreateGroups(int n){
-    SetN(n);
-    CreateGroups();
-}
-
-//create groups, stockMap and no. of groups as parameter
-void Group::CreateGroups(Map* stockMapPtr_, int n){
-    UpdateStockMap(stockMapPtr_);
-    CreateGroups(n);
-}
-
 //overloaded subscript operator to return by groupname
 vector<string>& Group::operator[] (const string& groupname){
     if (groupname == Group_Names[0]) return Group_Mapping[0];
-    else if (groupname == Group_Names[1]) == true) return GroupMapping[1];
-    else if (groupname == Group_Names[2])) == true) return GroupMapping[2];
-    return nullptr;
+    else if (groupname == Group_Names[1]) return Group_Mapping[1];
+    else if (groupname == Group_Names[2]) return Group_Mapping[2];
 }
 
 //Groupby_Surprise derived class
@@ -91,9 +63,33 @@ Groupby_Surprise::Groupby_Surprise(Map* stockMapPtr_): Group(stockMapPtr_){
 Groupby_Surprise::~Groupby_Surprise(){
 }
 
-//compare stocks by surprise percent
-bool Groupby_Surprise::compare(Stocks& a, Stocks& b){
-    return (a.GetSurprisePercent() < b.GetSurprisePercent());
+bool compare(Stocks& a, Stocks&b){
+    return (a.GetSurprisePerecent() > b.GetSurprisePerecent());
+}
+
+void Groupby_Surprise::CreateGroups(){
+    vector<Stocks> stockVector;
+    for (auto it = stockMapPtr->begin(); it != stockMapPtr->end(); ++it) stockVector.push_back(it->second);
+    sort(stockVector.begin(), stockVector.end(), compare);
+    int NoOfStocks = (int)(stockVector.size()/N_group);
+    
+    for (int i = 0; i < N_group; ++i){
+        for (int j = i * NoOfStocks; j < min(i + NoOfStocks, int(stockVector.size())); ++j){
+            Group_Mapping[i].push_back(stockVector[j].GetTicker());
+        }
+    }
+}
+
+//create groups, no. of groups as parameter
+void Groupby_Surprise::CreateGroups(int n){
+    SetN(n);
+    CreateGroups();
+}
+
+//create groups, stockMap and no. of groups as parameter
+void Groupby_Surprise::CreateGroups(Map* stockMapPtr_, int n){
+    UpdateStockMap(stockMapPtr_);
+    CreateGroups(n);
 }
 
 
