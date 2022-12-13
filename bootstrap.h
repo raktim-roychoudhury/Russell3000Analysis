@@ -32,9 +32,10 @@ namespace fre
             Vector VSQRT(Vector &V);
             Vector AbnormRet(string ticker);
             Vector generateSample(int gr_n);
+            
             // void Plot() const; 
-            void SetMCN(int N_);
-            void SetM(int M_)
+            void SetMCN(int N_) {N = N_};
+            void SetM(int M_) {M = M_};
             void RunBootstrap(int T); // return
             
     };

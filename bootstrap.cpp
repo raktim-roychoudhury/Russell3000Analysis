@@ -7,21 +7,27 @@
 #include <iomanip>
 #include <cassert>
 #include <map>
+include <chrono>
+#include <time.h>
+#include<algorithm>
+#include<iterator>
 #include "Stocks.h"
 #include "bootstrap.h"
 
 namespace fre
 {
 
-    Vector Bootstrap :: generateSample(int gr_n) // unit tested except group pointer **
+    Vector Bootstrap :: generateSample(int gr_n) // To be unit tested - with integration 
     {
         int max_size = 1000;
+        Vector grouptickers(max_size); 
+        grouptickers = GroupPtr[gr_n];
         String W(M);
         vector<int> numbers;
         vector<int> sample;
         int num_random_samples = 80;
         for (int i = 0; i < max_size; i++)   
-		    numbers.push_back(i);
+        numbers.push_back(i);
 	    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 	    std::shuffle(numbers.begin(), numbers.end(), std::default_random_engine(seed));
     	for (int i = 0; i < num_random_samples; i++)
@@ -30,7 +36,7 @@ namespace fre
     	}
     	for (int i = 0; i < sample.size(); i++)
     	{
-    		W[i] = grp_ptr->sample[i];  // group pointer **
+    		W[i] = grouptickers[sample[i]];  // operator overloading
     	}
     	
 	    return W;
@@ -45,7 +51,7 @@ namespace fre
     }
     
     // return CAAR calculation across sample stocks (of 1 sample) for 2N timesteps (2N x 1)
-    Vector Bootstrap :: cumsum(const Vector& V) // unti tested
+    Vector Bootstrap :: cumsum(const Vector& V) // unit tested
     {
         int d = (int)V.size();
         Vector U(d);
@@ -58,7 +64,7 @@ namespace fre
     }
     
     
-    Vector Bootstrap :: AbnormRet(string ticker)
+    Vector Bootstrap :: AbnormRet(string ticker) // To be unit tested - with integration 
     {
         Vector AbnormReturn(T);
         int start, end;
@@ -71,10 +77,9 @@ namespace fre
         }
         return AbnormReturn
     }
-    
- // we need IWV, we need the earnings announcement date for each stock and returns functions in stock class
  
-    Vector Bootstrap :: Cal_AAR(int gr_n) //group number) // return AAR calculation across sample stocks (of 1 sample) for 2N timesteps (2N x 1)
+    // return AAR calculation across sample stocks (of 1 sample) for 2N timesteps (2N x 1)
+    Vector Bootstrap :: Cal_AAR(int gr_n) // To be unit tested - with integration 
     {
         Vector sample(M);
         Vector Ave = ConstVector(0,T);
@@ -85,13 +90,14 @@ namespace fre
         }
         
         Ave = (1/M)*Ave;
-        
         return Ave;
+        
     }
 
-    
-    void Bootstrap::RunBootstrap(int T) //number of timesteps: 2N)
+    //number of timesteps: 2N)
+    void Bootstrap :: RunBootstrap(int T)  // To be unit tested - with integration 
     {
+
         Vector AAR_tmp, CAAR_tmp;
         int N_Group = GroupPtr->GetN(); // number of groups. In this case - 3
     
@@ -118,12 +124,9 @@ namespace fre
             
             Avg_AAR[n] = (1/MCN)*Avg_AAR[n]; 
             Avg_CAAR[n] = (1/MCN)*Avg_CAAR[n];
-            // Avg_AAR[n] = (AAR[n]^ConstVector(1,T))/T; don't need to average across time 
-            // Avg_CAAR[n] = (CAAR[n]^ContVector(1,T))/T;
             AAR_STD[n] = VSQRT((1/(MCN)*AAR_STD[n] - Avg_AAR[n]*Avg_AAR[n]));
             CAAR_STD[n] = VSQRT((1/(MCN))*CAAR_STD[n] - Avg_CAAR[n]*Avg_CAAR[n]); 
         }
-        
-    }
+    } 
 }
 
