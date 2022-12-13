@@ -21,12 +21,13 @@ namespace MatrixOp {
                 v.pushback(c)
             }
             x.pushback(v);
+            v.clear();
         }
         return x;
     }
 	Vector ConstVector(double c,int size)
 	{
-	   Vector x(size)
+	   Vector x(size);
         for(Vector::iterator itr=x.begin(); itr!=x.end();++itr)
         {
             *itr = c;
@@ -68,13 +69,6 @@ namespace MatrixOp {
         Vector U(d);
         for (int j = 0; j < d; j++) U[j] = a + V[j];
         return U;
-    }
-    
-    Vector& operator=(Vector& V, const Vector& W)
-    {
-        int d = (int)V.size();
-        for (int j = 0; j < d; j++) V[j] = W[j];
-        return V;
     }
 
     Vector& operator+=(Vector& V, const Vector& W)
