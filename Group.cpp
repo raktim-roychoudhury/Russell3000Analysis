@@ -43,7 +43,7 @@ Map Group::GetStockMap() const{
 
 //return pointer to Group_Mapping Table
 Table Group::GetGroup_Mapping(){
-    return (Group_Mapping);
+    return Group_Mapping;
 }
 
 //overloaded subscript operator to return by groupname
@@ -69,13 +69,18 @@ bool compare(Stocks& a, Stocks&b){
 
 //Create groups by suprise percent
 void Groupby_Surprise::CreateGroups() {
+    Group_Mapping.resize(3);
     vector<Stocks> stockVector;
     for (auto it = stockMapPtr->begin(); it != stockMapPtr->end(); ++it) stockVector.push_back(it->second);
+    cout << "stock vector populated" << endl;
     sort(stockVector.begin(), stockVector.end(), compare);
-    int NoOfStocks = (int)(stockVector.size()/N_group);
+    cout << "stock vector sorted" << endl;
+    int NoOfStocks = (int)stockVector.size()/N_group;
     
-    for (int i = 0; i < N_group; ++i){
-        for (int j = i * NoOfStocks; j < min(i + NoOfStocks, int(stockVector.size())); ++j){
+    for (int i = 0; i < N_group; ++i)
+    {   cout << "populated for group number" << i << endl;
+        for (int j = i * NoOfStocks; j < min(i + NoOfStocks, int(stockVector.size())); ++j)
+        {
             Group_Mapping[i].push_back(stockVector[j].GetTicker());
         }
     }
