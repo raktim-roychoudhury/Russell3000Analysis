@@ -14,10 +14,16 @@
 #include<iterator>
 #include "Stocks.h"
 #include "bootstrap.h"
-using namespace MatrixOp;
+#include "Matrix.h"
+#include "Group.h"
 
 namespace fre
 {
+    Bootstrap::Bootstrap(Group* GroupPtr_, map<string, Stocks>* MapPtr_): GroupPtr(GroupPtr_),MapPtr(MapPtr_)
+    {
+        T = (*MapPtr).begin()->second.GetN()*2;
+             
+    }
 
     String Bootstrap :: generateSample(int gr_n) // To be unit tested - with integration 
     {
@@ -44,6 +50,7 @@ namespace fre
 	    return W;
     }
     
+    /*
     Vector Bootstrap :: VSQRT(Vector &V)    // unit tested
     {
         int d = (int)V.size();
@@ -51,7 +58,7 @@ namespace fre
         for (int j = 0; j < d; j++) U[j] = sqrt(V[j]);
         return U;
     }
-    
+    */
     // return CAAR calculation across sample stocks (of 1 sample) for 2N timesteps (2N x 1)
     Vector Bootstrap :: cumsum(const Vector& V) // unit tested
     {
@@ -68,23 +75,25 @@ namespace fre
     
     Vector Bootstrap :: AbnormRet(string ticker) // To be unit tested - with integration 
     {
-        Vector AbnormReturn(myMap[ticker].GetN());
+        Vector AbnormReturn(T);
         int start, end;
-        start = myMap[ticker].GetStartIndex();
-        end = myMap[ticker].GetEndIndex();
+        start = (*MapPtr)[ticker].GetStartIndex();
+        end = (*MapPtr)[ticker].GetEndIndex();
+        Vector R = (*MapPtr)[ticker].GetReturns();
+        Vector Benchmark = (*MapPtr)["IWV"].GetReturns();
         int j = 0;
-        for(int i=start; i<=end; i++, j++ )
+        for(int i=0; i<=T; i++)
         {
-         AbnormReturn[j] = myMap[ticker].GetReturns()[i] - myMap["IWV"].GetReturns()[i];   
+         AbnormReturn[i] = R[start+1+i] - Benchmark[start+1+i];   
         }
-        return AbnormReturn
+        return AbnormReturn;
     }
  
     // return AAR calculation across sample stocks (of 1 sample) for 2N timesteps (2N x 1)
     Vector Bootstrap :: Cal_AAR(int gr_n) // To be unit tested - with integration 
     {
         String sample(M);
-        Vector Ave = ConstVector(0,myMap[ticker]->GetN());
+        Vector Ave = ConstVector(0,T);
         sample = generateSample(gr_n);
         for(int i = 0; i< M; i++)
         {
@@ -97,12 +106,11 @@ namespace fre
     }
 
     //number of timesteps: 2N)
-    void Bootstrap :: RunBootstrap(int T)  // To be unit tested - with integration 
+    void Bootstrap :: RunBootstrap()  // To be unit tested - with integration 
     {
 
         Vector AAR_tmp, CAAR_tmp;
         int N_Group = GroupPtr->GetN(); // number of groups. In this case - 3
-        int T = myMap[ticker].GetN();
         //initialize result matrices to 0s
         Avg_AAR = ConstMatrix(0,N_Group,T);     //group x time 
         Avg_CAAR = ConstMatrix(0,N_Group,T);    //group x time 
@@ -111,7 +119,7 @@ namespace fre
         
         AAR_tmp.resize(T); // vector of size 2N 
         CAAR_tmp.resize(T); // vector of size 2N 
-        Avg_CAAR_tmp.resize(T); 
+        CAAR_tmp.resize(T); 
         for(int n = 0; n < N_Group ; n++) //iterate through each group
         {
             for(int i = 0;i < MCN; i++) //iterate through each monte carlo iteration (i.e. Bootstrap iteration 1-40) 
@@ -119,15 +127,22 @@ namespace fre
                 AAR_tmp = Cal_AAR(n);
                 Avg_AAR[n] += AAR_tmp;      
                 AAR_STD[n] += AAR_tmp*AAR_tmp;
-                Avg_CAAR_tmp = cumsum(AAR_tmp);
+                CAAR_tmp = cumsum(AAR_tmp);
                 Avg_CAAR[n] += CAAR_tmp;
                 CAAR_STD[n] += CAAR_tmp*CAAR_tmp;
             }
+            for(int j=0;j<T;j++)
+            {
+                Avg_AAR[n][j] = (1/MCN)*Avg_AAR[n][j]; 
+                Avg_CAAR[n][j] = (1/MCN)*Avg_CAAR[n][j];
+                AAR_STD[n][j] = sqrt((1/(MCN)*AAR_STD[n][j] - Avg_AAR[n][j]*Avg_AAR[n][j]));
+                CAAR_STD[n][j] = sqrt((1/(MCN))*CAAR_STD[n][j] - Avg_CAAR[n][j]*Avg_CAAR[n][j]); 
+            }
             
-            Avg_AAR[n] = (1/MCN)*Avg_AAR[n]; 
-            Avg_CAAR[n] = (1/MCN)*Avg_CAAR[n];
-            AAR_STD[n] = VSQRT((1/(MCN)*AAR_STD[n] - Avg_AAR[n]*Avg_AAR[n]));
-            CAAR_STD[n] = VSQRT((1/(MCN))*CAAR_STD[n] - Avg_CAAR[n]*Avg_CAAR[n]); 
+            //Avg_AAR[n] = (1/MCN)*Avg_AAR[n]; 
+            //Avg_CAAR[n] = (1/MCN)*Avg_CAAR[n];
+            //AAR_STD[n] = VSQRT((1/(MCN)*AAR_STD[n] - Avg_AAR[n]*Avg_AAR[n]));
+            //CAAR_STD[n] = VSQRT((1/(MCN))*CAAR_STD[n] - Avg_CAAR[n]*Avg_CAAR[n]); 
         }
     }
     
@@ -148,4 +163,6 @@ namespace fre
         return CAAR_STD[gr_index];
     }
 }
+
+
 
