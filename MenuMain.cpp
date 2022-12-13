@@ -32,7 +32,22 @@ void print_v(vector<double> v)
 }
 
 //map and vector of vector prints?? are they included in header files ?
-
+void SetN(int N, map<string, Stocks> &stock_map, String &DateList)
+{
+    
+    string ticker;
+    Stocks curr_stock;
+    
+    auto itr = stock_map.begin();
+    
+    for(; itr != stock_map.end(); itr++)
+    {
+        ticker = itr->first;
+        curr_stock = itr->second; 
+        //set N, starting date and ending date for each stock
+        curr_stock.SetN(N, DateList);
+    }
+}
 
 int main() 
 {
@@ -41,13 +56,23 @@ int main()
     string tick;
     double N=0;
     
-    map<string, Stocks> stockData;
+    map<string, Stocks> GlobalStockMap;
+    Stocks Russel;
+    GlobalStockMap["IWV"] = Russel;
+    LoadEarnings(GlobalStockMap);
     
-    LoadEarnings(&stockData);
+    String DateList = GenerateDates();
+    SetN(30, GlobalStockMap, DateList);
     
-    Groupby_Surprise group(stockData);
-    group.CreateGroups();
-    Table* groupTable = group.GetGroup_Mapping();
+    // FetchData(GlobalStockMap);
+    // write2file(GlobalStockMap);
+
+    Groupby_Surprise gobj(&GlobalStockMap);
+    cout << "group obj created" << endl;
+    gobj.CreateGroups();
+    cout << "groups created" << endl;
+    Table groupTable = gobj.GetGroup_Mapping();
+    cout << "Table created" << endl;
     
     //temporary vector 
     vector<double> v;
