@@ -13,7 +13,7 @@
 namespace fre
 {
 
-    Vector generateSample(int gr_n)
+    Vector Bootstrap :: generateSample(int gr_n) // unit tested except group pointer **
     {
         int max_size = 1000;
         String W(M);
@@ -30,55 +30,65 @@ namespace fre
     	}
     	for (int i = 0; i < sample.size(); i++)
     	{
-    		W[i] = grp_ptr->sample[i];
+    		W[i] = grp_ptr->sample[i];  // group pointer **
     	}
     	
 	    return W;
     }
     
+    Vector Bootstrap :: VSQRT(Vector &V)    // unit tested
+    {
+        int d = (int)V.size();
+        Vector U(d);
+        for (int j = 0; j < d; j++) U[j] = sqrt(V[j]);
+        return U;
+    }
+    
+    // return CAAR calculation across sample stocks (of 1 sample) for 2N timesteps (2N x 1)
+    Vector Bootstrap :: cumsum(const Vector& V) //
+    {
+        int d = (int)V.size();
+        Vector U(d);
+        U[0] = V[0];
+        for(int j = 1; j < d; j++)
+        {
+            U[j] = U[j-1] + V[j];
+        }
+        return U;
+    }
+    
+    
     Vector Bootstrap :: AbnormRet(string ticker)
     {
         Vector AbnormReturn(T);
-        start_index = FN(ticker)[0];
-        end_index =FN(ticker)[1];
+        int start, end;
+        start = myMap[ticker].GetStartIndex();
+        end = myMap[ticker].GetEndIndex();
         int j = 0;
-        for(int i=start_index; i<=end_index; i++, j++ )
+        for(int i=start; i<=end; i++, j++ )
         {
-         AbnormReturn[j] = myMap(ticker).Ret[i] - myMap("IWV").Ret[i];   
+         AbnormReturn[j] = myMap[ticker].GetReturns()[i] - myMap["IWV"].GetReturns()[i];   
         }
         return AbnormReturn
     }
     
-    // vector<string> PullTickers(int index) const;
  // we need IWV, we need the earnings announcement date for each stock and returns functions in stock class
-    Vector Bootstrap :: Cal_AAR(int gr_n //group number) // return AAR calculation across sample stocks (of 1 sample) for 2N timesteps (2N x 1)
+ 
+    Vector Bootstrap :: Cal_AAR(int gr_n) //group number) // return AAR calculation across sample stocks (of 1 sample) for 2N timesteps (2N x 1)
     {
         Vector sample(M);
         Vector Ave = ConstVector(0,T);
         sample = generateSample(n);
         for(int i = 0; i< M; i++)
         {
-            Ave += AbnormRet(sample[i]);
-            
-            
+            Ave += AbnormRet(sample[i]);    // operator overloading
         }
         
+        Ave = (1/M)*Ave;
         
-        
+        return Ave;
     }
-    
-    
-    Vector Bootstrap :: Cal_CAAR(const Vector& AAR) // return CAAR calculation across sample stocks (of 1 sample) for 2N timesteps (2N x 1)
-    {
-        Vector CAAR;
-        CAAR.pushback(AAR[0]);
-        for(int i = 1; i < AAR.size(); i++)
-        {
-            CAAR.pushback(CAAR[i-1]+AAR[i]);
-        }
-        return CAAR;
-    }
-    
+
     
     void Bootstrap::RunBootstrap(int T //number of timesteps: 2N)
     {
@@ -89,10 +99,10 @@ namespace fre
         //initialize result matrices to 0s
         AAR = ConstMatrix(0,N_Group,T);     //group x time 
         CAAR = ConstMatrix(0,N_Group,T);    //group x time 
-        AAR_STD = ConstVector(0,N_Group);   //group x 1 
-        CAAR_STD = ConstVector(0,N_Group);  //group x 1 
-        Avg_AAR = ConstVector(0,N_Group);   //group x 1 
-        Avg_CAAR = ConstVector(0,N_Group);  //group x 1 
+        AAR_STD = ConstMatrix(0,N_Group,T);   //group x time 
+        CAAR_STD = ConstMatrix(0,N_Group,T); //group x time 
+        //Avg_AAR = ConstVector(0,N_Group);   //group x 1 
+        //Avg_CAAR = ConstVector(0,N_Group);  //group x 1 
         
         AAR_tmp.resize(T); // vector of size 2N 
         CAAR_tmp.resize(T); // vector of size 2N 
@@ -105,17 +115,17 @@ namespace fre
                 AAR_tmp = Cal_AAR(n);
                 AAR[n] += AAR_tmp;      
                 AAR_STD[n] += AAR_tmp^AAR_tmp;
-                CAAR_tmp = Cal_CAAR(AAR_tmp);
+                CAAR_tmp = cumsum(AAR_tmp);
                 CAAR[n] += CAAR_tmp;
                 CAAR_STD[n] += CAAR_tmp^CAAR_tmp;
             }
             
             AAR[n] = (1/MCN)*AAR[n]; //divide by N later to not lose precision
             CAAR[n] = (1/MCN)*CAAR[n];
-            Avg_AAR[n] = (AAR[n]^ConstVector(1,T))/T;
-            Avg_CAAR[n] = (CAAR[n]^ContVector(1,T))/T;
-            AAR_STD[n] = sqrt((1/(T*MCN)*AAR_STD[n] - Avg_AAR[n]*Avg_AAR[n]));
-            CAAR_STD[n] = sqrt((1/(T*MCN))*CAAR_STD[n] - Avg_CAAR[n]*Avg_CAAR[n]); 
+            // Avg_AAR[n] = (AAR[n]^ConstVector(1,T))/T; don't need to average across time 
+            // Avg_CAAR[n] = (CAAR[n]^ContVector(1,T))/T;
+            AAR_STD[n] = VSQRT((1/(MCN)*AAR_STD[n] - AAR[n]*AAR[n]));
+            CAAR_STD[n] = VSQRT((1/(MCN))*CAAR_STD[n] - CAAR[n]*CAAR[n]); 
         }
         
     }
