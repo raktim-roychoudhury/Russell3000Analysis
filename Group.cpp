@@ -54,7 +54,6 @@ vector<string>& Group::operator[] (const string& groupname){
 }
 
 //Groupby_Surprise derived class
-
 //constructor
 Groupby_Surprise::Groupby_Surprise(Map* stockMapPtr_): Group(stockMapPtr_){
 }
