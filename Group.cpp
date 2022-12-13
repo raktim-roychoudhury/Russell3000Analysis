@@ -63,10 +63,12 @@ Groupby_Surprise::Groupby_Surprise(Map* stockMapPtr_): Group(stockMapPtr_){
 Groupby_Surprise::~Groupby_Surprise(){
 }
 
+//comparator 
 bool compare(Stocks& a, Stocks&b){
     return (a.GetSurprisePerecent() > b.GetSurprisePerecent());
 }
 
+//Create groups by suprise percent
 void Groupby_Surprise::CreateGroups(){
     vector<Stocks> stockVector;
     for (auto it = stockMapPtr->begin(); it != stockMapPtr->end(); ++it) stockVector.push_back(it->second);
