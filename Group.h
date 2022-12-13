@@ -19,13 +19,14 @@ class Group
         //data members
         Table Group_Mapping; //table of tickers
         Map* stockMapPtr;
-        int N_Group;
+        int N_group;
+        vector<string> Group_Names;
         
         //constructor
         Group(Map* data_);
         
         //pure virtual compare function to sort stocks by attribute
-        virtual bool compare(const Stocks& a,const Stocks& b) = 0;
+        virtual bool compare(Stocks& a,Stocks& b) = 0;
         
         //destructor
         virtual ~Group() = 0;
@@ -34,6 +35,10 @@ class Group
         //get, set number of groups
         void SetN(int n);
         int GetN() const;
+        
+        //get, set group names
+        void SetGroupNames(vector<string>& names);
+        vector<string> GetGroupNames() const;
         
         //get, set stock map
         Map* GetStockMap() const;
@@ -48,14 +53,14 @@ class Group
         void CreateGroups(Map* stockMapPtr_, int n);
         
         //overloaded subscript operator to return by group name
-        vector<string>& operator[] (const string& groupname) const;
+        vector<string>& operator[] (const string& groupname);
 };
 
 class Groupby_Surprise: public Group
 {
     //comparator to sort stocks by attribute
     protected:
-        bool compare(const Stocks& a,const Stocks& b);
+        bool compare(Stocks& a,Stocks& b);
         
     public:
         //constructor

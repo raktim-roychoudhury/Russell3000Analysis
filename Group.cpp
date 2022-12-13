@@ -4,6 +4,7 @@
 //default no. of groups = 3
 //constructor
 Group::Group(Map* data_):stockMapPtr(data_), N_group(3){
+    vector<string> Group_Names({"Beat", "Meet", "Miss"});
 }
 
 //destructor
@@ -20,18 +21,28 @@ int Group::GetN() const{
     return N_group;
 }
 
+//set group names
+void Group::SetGroupNames(vector<string>& names){
+    Group_Names = names;
+}
+
+//get group names
+vector<string> Group::GetGroupNames() const{
+    return Group_Names;
+}
+
 //update Stock Map
 void Group::UpdateStockMap(Map* stockMapPtr_){
     stockMapPtr = stockMapPtr_;
 }
 
 //get Stock Map
-Map* Group::GetStockMap(){
+Map* Group::GetStockMap() const{
     return stockMapPtr;
 }
 
 //return pointer to Group_Mapping Table
-Table* Group::GetGroup_Mapping() const{
+Table* Group::GetGroup_Mapping(){
     return (&Group_Mapping);
 }
 
@@ -44,7 +55,7 @@ void Group::CreateGroups(){
     int NoOfStocks = (int)(stockVector.size()/N_group);
     
     for (int i = 0; i < N_group; ++i){
-        for (int j = i * NoOfStocks; j < min(i + NoOfStocks, stockVector.size()); ++j){
+        for (int j = i * NoOfStocks; j < min(i + NoOfStocks, int(stockVector.size())); ++j){
             Group_Mapping[i].push_back(stockVector[j].GetTicker());
         }
     }
@@ -63,10 +74,10 @@ void Group::CreateGroups(Map* stockMapPtr_, int n){
 }
 
 //overloaded subscript operator to return by groupname
-vector<string>& Group::operator[] (const string& groupname) const{
-    if (strcmp(groupname, string("Beat")) == true) return Group_Mapping[0];
-    else if (strcmp(groupname, string("Meet")) == true) return GroupMapping[1];
-    else if (strcmp(groupname, string("Miss")) == true) return GroupMapping[2];
+vector<string>& Group::operator[] (const string& groupname){
+    if (groupname == Group_Names[0]) return Group_Mapping[0];
+    else if (groupname == Group_Names[1]) == true) return GroupMapping[1];
+    else if (groupname == Group_Names[2])) == true) return GroupMapping[2];
     return nullptr;
 }
 
@@ -81,8 +92,8 @@ Groupby_Surprise::~Groupby_Surprise(){
 }
 
 //compare stocks by surprise percent
-bool Groupby_surprise::compare(Stocks& a, Stocks& b){
-    return (a.GetSurprisePerecent() < b.GetSurprisePerecent());
+bool Groupby_Surprise::compare(Stocks& a, Stocks& b){
+    return (a.GetSurprisePercent() < b.GetSurprisePercent());
 }
 
 
