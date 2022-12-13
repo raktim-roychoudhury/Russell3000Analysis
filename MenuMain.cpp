@@ -66,8 +66,8 @@ int main()
     
     String DateList = GenerateDates();
     
-    // FetchData(GlobalStockMap);
-    // write2file(GlobalStockMap);
+    FetchData(GlobalStockMap);
+    write2file(GlobalStockMap);
 
     Groupby_Surprise gobj(&GlobalStockMap);
     cout << "group obj created" << endl;
@@ -176,7 +176,8 @@ int main()
             }
             case 3:
             {
-                Bootstrap(&gobj, &GlobalStockMap);
+                Bootstrap boot(&gobj, &GlobalStockMap);
+                boot.RunBootstrap();
                 cout << "Bootstrap object created" << endl;
                 if(N>=60 && N<=90)
                 {
@@ -198,19 +199,22 @@ int main()
                             cout<<" Missed Estimate Group summary "<<endl;
                             cout<<" Average Abnormal Returns (AAR) "<<endl;
                             //print object.missaar
-                            print_v(v);
+                            Vector vec = boot.GetAAR(0);
+                            cout << vec << endl;
                         
                             cout<<" Average Abnormal Returns standard deviation (AAR-std) "<<endl;
                             //print object.missaarstd
-                            print_v(v);
+                            vec.clear();
+                            vec = boot.GetAAR_STD(0);
+                            cout << vec << endl;
                 
                             cout<<" Cumilative Average Abnormal Returns (CAAR) "<<endl;
                             //print object.misscarr
-                            print_v(v);
+                            //print_v(v);
                 
                             cout<<" Cumilative Average Abnormal Returns (CAAR-std) "<<endl;
                             //print object.misscaarstd
-                            print_v(v);
+                            //print_v(v);
                             test = 1;
                         }
                         else if(group == 2)
