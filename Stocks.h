@@ -80,6 +80,7 @@ namespace fre
         string GetEndDate() { return end_date;}
         int GetStartIndex() { return start_index; }
         int GetEndIndex() { return end_index; }
+        int GetN() {return N; }
 	};
 
 

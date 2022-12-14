@@ -253,7 +253,7 @@ namespace fre
 			string url_common = "https://eodhistoricaldata.com/api/eod/";
 			string start_date = "2022-03-01";
 			string end_date = "2022-12-01";
-			string api_token = "638d6a442c56c0.76328612";  // You must replace this API token with yours
+			string api_token = "637e7bd9087ef4.06157778";  // You must replace this API token with yours
 			
 			auto itr = stock_map.begin();
 			

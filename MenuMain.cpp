@@ -45,25 +45,38 @@ void SetN(int N, map<string, Stocks> &stock_map, String &DateList)
     for(; itr != stock_map.end(); itr++)
     {
         ticker = itr->first;
-        curr_stock = itr->second; 
+        if (ticker == "IWV"){
+            continue;
+        }
+        cout << ticker << endl;
         //set N, starting date and ending date for each stock
-        curr_stock.SetN(N, DateList);
+        (itr->second).SetN(N, DateList);
     }
 }
+
 
 int main() 
 {
     
-    int temp,x,group, test =0;  // menu option and number of days 
+    int x,group,test =0;  // menu option and number of days 
     string tick;
-    double N=0;
+    int N=0;
     int integer1;
     
+    // map<string, Stocks> GlobalStockMap;
+    // LoadEarnings(GlobalStockMap);
+    // String DateList = GenerateDates();
+    // FetchData(GlobalStockMap);
+    // write2file(GlobalStockMap);
+    // Stocks Russel;
+    // map<string, Stocks> RusselMap;
+    // RusselMap["IWV"] = Russel;
+    // FetchData(RusselMap);
+
     map<string, Stocks> GlobalStockMap;
     Stocks Russel;
     GlobalStockMap["IWV"] = Russel;
     LoadEarnings(GlobalStockMap);
-    
     String DateList = GenerateDates();
     
     FetchData(GlobalStockMap);
@@ -113,6 +126,7 @@ int main()
                     cin>>N;
                     integer1 = (int) N;
                     SetN(integer1, GlobalStockMap, DateList);
+                    // GlobalStockMap["IWV"] = RusselMap["IWV"]; 
                     if (integer1 != N)
                     {
                         cout<<"Error, please enter an integer value error"<<endl;

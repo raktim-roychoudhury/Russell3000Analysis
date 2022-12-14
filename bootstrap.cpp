@@ -27,26 +27,24 @@ namespace fre
 
     String Bootstrap :: generateSample(int gr_n) // To be unit tested - with integration 
     {
-        int max_size = 1000;
-        String grouptickers(max_size); 
+        int max_size = (GroupPtr->GetGroup_Mapping())[gr_n].size();
+        String grouptickers(max_size);
         grouptickers = (GroupPtr->GetGroup_Mapping())[gr_n];
         String W(M);
         vector<int> numbers;
         vector<int> sample;
-        int num_random_samples = 80;
-        for (int i = 0; i < max_size; i++)   
-        numbers.push_back(i);
+        for (int i = 0; i < max_size; i++) {numbers.push_back(i);}
 	    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 	    std::shuffle(numbers.begin(), numbers.end(), std::default_random_engine(seed));
-    	for (int i = 0; i < num_random_samples; i++)
+    	for (int i = 0; i < M; i++)
     	{
     		sample.push_back(numbers[i]);
     	}
     	for (int i = 0; i < sample.size(); i++)
     	{
     		W[i] = grouptickers[sample[i]];  // operator overloading
+            cout << W[i] << endl;
     	}
-    	
 	    return W;
     }
     
@@ -81,10 +79,18 @@ namespace fre
         end = (*MapPtr)[ticker].GetEndIndex();
         Vector R = (*MapPtr)[ticker].GetReturns();
         Vector Benchmark = (*MapPtr)["IWV"].GetReturns();
+<<<<<<< HEAD
         int j = 0;
         for(int i=0; i<=T; i++)
         {
          AbnormReturn[i] = R[start+1+i] - Benchmark[start+1+i];   
+=======
+        for(int i=0; i<T; i++)
+        {
+         //cout << "TIMEPERIOD " << i << endl;
+         //cout << "start + i = " <<  start+i << "  " << R[start+1+i] << "  " << Benchmark[start+1+i] << endl;
+         AbnormReturn[i] = R[start+i] - Benchmark[start+i];   
+>>>>>>> c9266a5 (spandey debug)
         }
         return AbnormReturn;
     }
@@ -92,24 +98,38 @@ namespace fre
     // return AAR calculation across sample stocks (of 1 sample) for 2N timesteps (2N x 1)
     Vector Bootstrap :: Cal_AAR(int gr_n) // To be unit tested - with integration 
     {
+        cout << "Entering Cal_AAR function." << endl;
         String sample(M);
+<<<<<<< HEAD
         Vector Ave = ConstVector(0,T);
+=======
+        Matrix Ave = ConstMatrix(0,M,T);
+>>>>>>> c9266a5 (spandey debug)
         sample = generateSample(gr_n);
         for(int i = 0; i< M; i++)
         {
-            Ave += AbnormRet(sample[i]);    // operator overloading
+            cout << "STARTED STOCK " << i << endl;
+            for (int k = 0; k< T; k++){
+                Ave[i][k] = AbnormRet(sample[i])[k];
+            }
+            cout << "CALCULATED ABONORMAL RETURN FOR STOCK " << i << endl;
+            cout << "FINISHED STOCK "<< i << endl;
         }
-        
-        Ave = (1/M)*Ave;
-        return Ave;
+        Vector average_AAR(T);
+        for (int i = 0; i < T; i++){
+            for (int k = 0; k < M; k++ ){
+                average_AAR[i] += Ave[k][i];
+            }
+            average_AAR[i] = average_AAR[i] / M;
+        }
+        cout << "Exiting Cal_AAR function. " << endl;
+        return average_AAR;
         
     }
 
     //number of timesteps: 2N)
     void Bootstrap :: RunBootstrap()  // To be unit tested - with integration 
     {
-
-        Vector AAR_tmp, CAAR_tmp;
         int N_Group = GroupPtr->GetN(); // number of groups. In this case - 3
         //initialize result matrices to 0s
         Avg_AAR = ConstMatrix(0,N_Group,T);     //group x time 
@@ -117,16 +137,19 @@ namespace fre
         AAR_STD = ConstMatrix(0,N_Group,T);   //group x time 
         CAAR_STD = ConstMatrix(0,N_Group,T); //group x time 
         
-        AAR_tmp.resize(T); // vector of size 2N 
-        CAAR_tmp.resize(T); // vector of size 2N 
-        CAAR_tmp.resize(T); 
-        for(int n = 0; n < N_Group ; n++) //iterate through each group
+        cout << "Started Run Bootstrap" << endl;
+
+        Vector AAR_tmp(T), CAAR_tmp(T);
+        for(int n = 0; n < N_Group; n++) //iterate through each group
         {
             for(int i = 0;i < MCN; i++) //iterate through each monte carlo iteration (i.e. Bootstrap iteration 1-40) 
             {
+                cout << "n = " << n << ", i = " << i << endl;
                 AAR_tmp = Cal_AAR(n);
-                Avg_AAR[n] += AAR_tmp;      
-                AAR_STD[n] += AAR_tmp*AAR_tmp;
+                cout << "Finished Cal_AAR" << endl;
+                Avg_AAR[n] = Avg_AAR[n] + AAR_tmp;      
+                AAR_STD[n] = AAR_STD[n] + AAR_tmp*AAR_tmp;
+                cout << "Assigned Avg_AAR, AAR_STD. " << endl; 
                 CAAR_tmp = cumsum(AAR_tmp);
                 Avg_CAAR[n] += CAAR_tmp;
                 CAAR_STD[n] += CAAR_tmp*CAAR_tmp;
@@ -163,4 +186,6 @@ namespace fre
         return CAAR_STD[gr_index];
     }
 }
+
+
 

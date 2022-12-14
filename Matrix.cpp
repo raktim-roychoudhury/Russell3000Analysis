@@ -5,26 +5,27 @@
 #include "Matrix.h"
 using namespace std;
 
-namespace MatrixOp {
+namespace fre {
     typedef vector<double> Vector;
     typedef vector<vector<double>> Matrix;
     typedef vector<vector<string>> Table;
     
-    Matrix ConstMatrix(double c,int nrow, int ncol)
+
+    Matrix ConstMatrix(double c, int nrow, int ncol)
     {
         Matrix x;
-        Vector v(ncol);
-        for(i=0;i<nrow;i++)
+        for(int i=0; i<nrow; i++)
         {
-            for(j=0;j<ncol;j++)
+            Vector v;
+            for(int j=0; j<ncol; j++)
             {
-                v.pushback(c)
+                v.push_back(c);
             }
-            x.pushback(v);
-            v.clear();
+            x.push_back(v);
         }
         return x;
     }
+
 	Vector ConstVector(double c,int size)
 	{
 	   Vector x(size);
