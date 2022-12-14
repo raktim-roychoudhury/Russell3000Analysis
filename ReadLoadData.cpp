@@ -252,7 +252,7 @@ namespace fre
 		{
 			string url_common = "https://eodhistoricaldata.com/api/eod/";
 			string start_date = "2022-01-01";
-			string end_date = "2022-12-01";
+			string end_date = "2022-12-31";
 			string api_token = "637e7bd9087ef4.06157778";  // You must replace this API token with yours
 			
 			auto itr = stock_map.begin();
@@ -330,7 +330,7 @@ namespace fre
 			Vector adj = temp.GetAdjusted_close();
 			
 			fout<<"Adj Close: "<<adj.size()<<endl;
-			for(int i = 0; i < adj.size(); i++)
+			for(int i = 0; i < (int)adj.size(); i++)
 			{
 				fout<<adj[i]<<" ";
 			}
@@ -338,7 +338,7 @@ namespace fre
 			Vector pct_returns = temp.GetReturns();
 			
 			fout<<endl<<"Percent returns: "<<pct_returns.size()<<endl;
-			for(int i = 0; i < pct_returns.size(); i++)
+			for(int i = 0; i < (int)pct_returns.size(); i++)
 			{
 				fout<<pct_returns[i]<<" ";
 			}

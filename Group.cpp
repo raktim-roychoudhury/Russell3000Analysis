@@ -1,5 +1,6 @@
 #include "Group.h"
 
+using namespace std;
 //base Group class
 //default no. of groups = 3
 //constructor
@@ -42,25 +43,22 @@ Map Group::GetStockMap() const{
 }
 
 //return pointer to Group_Mapping Table
-Table Group::GetGroup_Mapping(){
-    return Group_Mapping;
-}
+Table Group::GetGroup_Mapping(){ return Group_Mapping; }
 
 //overloaded subscript operator to return by groupname
 vector<string> Group::operator[] (const string& groupname){
     if (groupname == Group_Names[0]) return Group_Mapping[0];
     else if (groupname == Group_Names[1]) return Group_Mapping[1];
     else if (groupname == Group_Names[2]) return Group_Mapping[2];
+    return Group_Mapping[0];
 }
 
 //Groupby_Surprise derived class
 //constructor
-Groupby_Surprise::Groupby_Surprise(Map* stockMapPtr_): Group(stockMapPtr_){
-}
+Groupby_Surprise::Groupby_Surprise(Map* stockMapPtr_): Group(stockMapPtr_){}
 
 //destructor
-Groupby_Surprise::~Groupby_Surprise(){
-}
+Groupby_Surprise::~Groupby_Surprise(){}
 
 //comparator 
 bool compare(Stocks& a, Stocks&b){
@@ -68,17 +66,21 @@ bool compare(Stocks& a, Stocks&b){
 }
 
 //Create groups by suprise percent
-void Groupby_Surprise::CreateGroups() {
+void Groupby_Surprise::CreateGroups(String skipped_tickers) 
+{
     Group_Mapping.resize(3);
     vector<Stocks> stockVector;
     for (auto it = stockMapPtr->begin(); it != stockMapPtr->end(); ++it) 
-    {   if(it->first == " ")
-            {
-                continue;
-            }
+    {   
+        if(std::find(skipped_tickers.begin(), skipped_tickers.end(), it->first) != skipped_tickers.end())
+            continue;
+        else if (it->first == "IWV")
+            continue;
+            
         // cout<< "key" << it->first << " : " << it->second.GetTicker() <<endl; 
         stockVector.push_back(it->second);
     }
+    cout<<"\nGrouping based on: "<<stockVector.size()<<endl;
     /*
     for (int j =0; j<stockVector.size(); j++ )
     {
@@ -101,15 +103,15 @@ void Groupby_Surprise::CreateGroups() {
 }
 
 //create groups, no. of groups as parameter
-void Groupby_Surprise::CreateGroups(int n){
+void Groupby_Surprise::CreateGroups(int n, String skipped_tickers){
     this->SetN(n);
-    this->CreateGroups();
+    this->CreateGroups(skipped_tickers);
 }
 
 //create groups, stockMap and no. of groups as parameter
-void Groupby_Surprise::CreateGroups(Map* stockMapPtr_, int n){
+void Groupby_Surprise::CreateGroups(Map* stockMapPtr_, int n, String skipped_tickers){
     this->UpdateStockMap(stockMapPtr_);
-    this->CreateGroups(n);
+    this->CreateGroups(n, skipped_tickers);
 }
 
 

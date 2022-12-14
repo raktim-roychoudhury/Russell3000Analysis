@@ -9,6 +9,7 @@
 
 namespace fre{
 
+	/*
 	vector<string> GenerateDates()
     {
     	set<int> day31({1,3,5,7,8,10,12});
@@ -49,32 +50,46 @@ namespace fre{
     	}
     	return DateList;
     }
+    */
 
-    void Stocks::SetDates(String dateslist)
+    int Stocks::SetDates()
 	{
+		cout<<" Found index";
 		auto itr = find(Date.begin(), Date.end(), earnings_date);
 
 		int index = std::distance(Date.begin(), itr);
-		start_date = Date[index - N];
-		end_date = Date[(index + N)];
-		start_index = index - N;
-		end_index = index + N;
+		
+		if(index + N >= (int)Adjusted_close.size())
+		{
+			cout<<" "<<index<<" ";
+			return -1;
+		}
+		else
+		{
+			start_date = Date[index - N];
+			end_date = Date[(index + N)];
+			
+			cout<<" start: "<<start_date<<" end: "<<end_date; 
+			start_index = index - N;
+			end_index = index + N;
+		}
+		return 1;
 	}
 	
 	void Stocks::CalculateReturns()
 	{
 		float daily_return;
-		for (int i = 1; i < Adjusted_close.size(); i++)
+		for (int i = 1; i < (int)Adjusted_close.size(); i++)
 		{
 			daily_return = Adjusted_close[i]/Adjusted_close[i-1] - (float)1.0;
 			pct_returns.push_back(daily_return);
 		}
 	}
 	
-	void Stocks::SetN(int N_, String &datelist)
+	int Stocks::SetN(int N_)
 	{
 		N = N_;
-		SetDates(datelist);
+		return SetDates();
 	}
 	
 }

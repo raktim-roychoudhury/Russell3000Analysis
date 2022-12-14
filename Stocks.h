@@ -58,7 +58,7 @@ namespace fre
         void SetCP(const Vector& CP) { Close_price = CP; }
         void SetACP(const Vector& ACP) { Adjusted_close = ACP; }
         void SetVol(const Vector& Vol) { volume = Vol; }
-        void SetN(int N_, String &DateList);
+        int SetN(int N_);
         void CalculateReturns();
         
         void SetReportedEarnings(const double& re) { reported_earnings = re;}
@@ -67,7 +67,7 @@ namespace fre
         void SetSurprisePerecent(const double& sp) { surprise_perecent = sp;}
         void SetTicker(const string& ticker_) { ticker = ticker_;}
         void SetEarningsDate(const string& earnings_date_) { earnings_date = earnings_date_;}
-        void SetDates(String dateslist);
+        int SetDates();
         
         
         double GetReportedEarnings() { return reported_earnings; }

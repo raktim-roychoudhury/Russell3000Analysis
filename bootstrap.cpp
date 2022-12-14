@@ -40,7 +40,7 @@ namespace fre
     	{
     		sample.push_back(numbers[i]);
     	}
-    	for (int i = 0; i < sample.size(); i++)
+    	for (int i = 0; i < (int)sample.size(); i++)
     	{
     		W[i] = grouptickers[sample[i]];  // operator overloading
             //cout << W[i] << endl;
@@ -74,9 +74,8 @@ namespace fre
     Vector Bootstrap :: AbnormRet(string ticker) // To be unit tested - with integration 
     {
         Vector AbnormReturn(T);
-        int start, end;
+        int start;
         start = (*MapPtr)[ticker].GetStartIndex();
-        end = (*MapPtr)[ticker].GetEndIndex();
         Vector R = (*MapPtr)[ticker].GetReturns();
         Vector Benchmark = (*MapPtr)["IWV"].GetReturns();
         for(int i=0; i<T; i++)
@@ -94,11 +93,14 @@ namespace fre
     {
         cout << "Entering Cal_AAR function." << endl;
         String sample(M);
+        
+        cout<<"generating sample\n";
         Matrix Ave = ConstMatrix(0,M,T);
         sample = generateSample(gr_n);
+        cout<<"finished sampling\n";
         for(int i = 0; i< M; i++)
         {
-            //cout << "STARTED STOCK " << sample[i] << endl;
+            cout << "STARTED STOCK " << sample[i] << endl;
             for (int k = 0; k< T; k++){
                 Ave[i][k] = AbnormRet(sample[i])[k];
             }

@@ -47,9 +47,9 @@ class Group
         Table GetGroup_Mapping();
         
         //create Groups
-        virtual void CreateGroups() = 0;
-        virtual void CreateGroups(int n) = 0;
-        virtual void CreateGroups(Map* stockMapPtr_, int n) = 0;
+        virtual void CreateGroups(String skipped_tickers) = 0;
+        virtual void CreateGroups(int n, String skipped_tickers) = 0;
+        virtual void CreateGroups(Map* stockMapPtr_, int n, String skipped_tickers) = 0;
         
         //overloaded subscript operator to return by group name
         vector<string> operator[] (const string& groupname);
@@ -69,9 +69,9 @@ class Groupby_Surprise: public Group
         ~Groupby_Surprise();
         
         //create groups
-        void CreateGroups();
-        void CreateGroups(int n);
-        void CreateGroups(Map* StockMapPtr_, int n);
+        void CreateGroups(String skipped_tickers);
+        void CreateGroups(int n, String skipped_tickers);
+        void CreateGroups(Map* StockMapPtr_, int n,String skipped_tickers);
         
         //friend function
         friend bool compare(Stocks& a, Stocks& b);

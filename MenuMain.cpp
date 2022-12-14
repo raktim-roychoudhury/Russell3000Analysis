@@ -34,24 +34,28 @@ void print_v(vector<double> v)
 }
 
 //map and vector of vector prints?? are they included in header files ?
-void SetN(int N, map<string, Stocks> &stock_map, String &DateList)
+String SetN(int N, map<string, Stocks> &stock_map)
 {
+    cout<<"Printing all tickers: ";
+    auto itr2 = stock_map.begin();
     
-    string ticker;
-    Stocks curr_stock;
+    String skipped_tickers;
     
-    auto itr = stock_map.begin();
-    
-    for(; itr != stock_map.end(); itr++)
+    for(;itr2 != stock_map.end(); itr2++)
     {
-        ticker = itr->first;
-        if (ticker == "IWV"){
-            continue;
+        //Stocks temp = (itr->second);
+        cout<<itr2->first;
+        int flag = (itr2->second).SetN(N);
+        if(flag == -1)
+        {
+            skipped_tickers.push_back(itr2->first);
+            cout<<" unable to set"   ;
         }
-        cout << ticker << endl;
-        //set N, starting date and ending date for each stock
-        (itr->second).SetN(N, DateList);
+        cout<<endl;
     }
+    
+    cout<<"\nsize inside SetN: "<<skipped_tickers.size()<<endl;
+    return skipped_tickers;
 }
 
 
@@ -78,17 +82,30 @@ int main()
     
     LoadEarnings(GlobalStockMap);
     
+    
+    String skipped_tickers;
+    
     Groupby_Surprise gobj(&GlobalStockMap);
     cout << "group obj created" << endl;
-    gobj.CreateGroups();
+    gobj.CreateGroups(skipped_tickers);
     cout << "groups created" << endl;
     Table groupTable = gobj.GetGroup_Mapping();
     cout << "Table created" << endl; 
     cout << groupTable[0].size() <<endl ;
     
-    String DateList = GenerateDates();
+    //String DateList = GenerateDates();
     GlobalStockMap["IWV"] = Russel;
+    
     FetchData(GlobalStockMap);
+    
+    skipped_tickers = SetN(90,GlobalStockMap);
+    
+    cout<<"size: "<<skipped_tickers.size()<<endl;
+    for(int i = 0; i < (int)skipped_tickers.size(); i++)
+    {
+        cout<<skipped_tickers[i]<<endl;
+    }
+    
     write2file(GlobalStockMap);
     
     /*
@@ -137,7 +154,9 @@ int main()
                     cout<<"Enter N value between 60 and 90: "<<endl;
                     cin>>N;
                     integer1 = (int) N;
-                    SetN(integer1, GlobalStockMap, DateList);
+                    skipped_tickers = SetN(integer1, GlobalStockMap);
+                    gobj.CreateGroups(skipped_tickers);
+                    
                     // GlobalStockMap["IWV"] = RusselMap["IWV"]; 
                     if (integer1 != N)
                     {
