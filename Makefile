@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -Wall -ggdb3 -std=c++11 -lcurl
+CFLAGS = -Wall -ggdb3 -std=c++11 -lcurl -lpthread
 
 Project: MenuMain.o ReadLoadData.o Stocks.o bootstrap.o Group.o Matrix.o
 	$(CC) $(CFLAGS) -o Project MenuMain.o ReadLoadData.o Stocks.o Group.o bootstrap.o Matrix.o

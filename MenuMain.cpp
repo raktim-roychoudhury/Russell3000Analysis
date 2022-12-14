@@ -14,6 +14,7 @@
 #include "Group.h"
 #include "bootstrap.h"
 #include "Matrix.h"
+#include <thread>
 
 using namespace std;
 using namespace std::chrono;
@@ -103,9 +104,15 @@ int main()
     //String DateList = GenerateDates();
     GlobalStockMap["IWV"] = Russel;
     
-    FetchData(GlobalStockMap, groupTable[0]); //String of tickers
-    FetchData(GlobalStockMap, groupTable[1]); //String of tickers
-    FetchData(GlobalStockMap, groupTable[2]); //String of tickers
+    thread t1(FetchData,std::ref(GlobalStockMap),groupTable[0]);
+    thread t2(FetchData,std::ref(GlobalStockMap),groupTable[1]);
+    thread t3(FetchData,std::ref(GlobalStockMap),groupTable[2]);
+    //t1.join();
+    //t2.join();
+    //t3.join();                                  
+    //FetchData(GlobalStockMap, groupTable[0]); //String of tickers
+    //FetchData(GlobalStockMap, groupTable[1]); //String of tickers
+    //FetchData(GlobalStockMap, groupTable[2]); //String of tickers
     //FetchData(GlobalStockMap);
     CalAbnormalReturns(GlobalStockMap);
     
