@@ -52,11 +52,11 @@ namespace fre{
 
     void Stocks::SetDates(String dateslist)
 	{
-		auto itr = find(dateslist.begin(), dateslist.end(), earnings_date);
+		auto itr = find(Date.begin(), Date.end(), earnings_date);
 
-		int index = std::distance(dateslist.begin(), itr);
-		start_date = dateslist[index - N];
-		end_date = dateslist[(index + N)];
+		int index = std::distance(Date.begin(), itr);
+		start_date = Date[index - N];
+		end_date = Date[(index + N)];
 		start_index = index - N;
 		end_index = index + N;
 	}

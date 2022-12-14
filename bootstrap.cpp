@@ -43,7 +43,7 @@ namespace fre
     	for (int i = 0; i < sample.size(); i++)
     	{
     		W[i] = grouptickers[sample[i]];  // operator overloading
-            cout << W[i] << endl;
+            //cout << W[i] << endl;
     	}
 	    return W;
     }
@@ -79,18 +79,12 @@ namespace fre
         end = (*MapPtr)[ticker].GetEndIndex();
         Vector R = (*MapPtr)[ticker].GetReturns();
         Vector Benchmark = (*MapPtr)["IWV"].GetReturns();
-<<<<<<< HEAD
-        int j = 0;
-        for(int i=0; i<=T; i++)
-        {
-         AbnormReturn[i] = R[start+1+i] - Benchmark[start+1+i];   
-=======
         for(int i=0; i<T; i++)
         {
          //cout << "TIMEPERIOD " << i << endl;
          //cout << "start + i = " <<  start+i << "  " << R[start+1+i] << "  " << Benchmark[start+1+i] << endl;
-         AbnormReturn[i] = R[start+i] - Benchmark[start+i];   
->>>>>>> c9266a5 (spandey debug)
+         AbnormReturn[i] = R[start+i] - Benchmark[start+i];
+         
         }
         return AbnormReturn;
     }
@@ -100,20 +94,16 @@ namespace fre
     {
         cout << "Entering Cal_AAR function." << endl;
         String sample(M);
-<<<<<<< HEAD
-        Vector Ave = ConstVector(0,T);
-=======
         Matrix Ave = ConstMatrix(0,M,T);
->>>>>>> c9266a5 (spandey debug)
         sample = generateSample(gr_n);
         for(int i = 0; i< M; i++)
         {
-            cout << "STARTED STOCK " << i << endl;
+            //cout << "STARTED STOCK " << sample[i] << endl;
             for (int k = 0; k< T; k++){
                 Ave[i][k] = AbnormRet(sample[i])[k];
             }
-            cout << "CALCULATED ABONORMAL RETURN FOR STOCK " << i << endl;
-            cout << "FINISHED STOCK "<< i << endl;
+            //cout << "CALCULATED ABONORMAL RETURN FOR STOCK " << i << endl;
+            //cout << "FINISHED STOCK "<< i << endl;
         }
         Vector average_AAR(T);
         for (int i = 0; i < T; i++){
@@ -153,13 +143,17 @@ namespace fre
                 CAAR_tmp = cumsum(AAR_tmp);
                 Avg_CAAR[n] += CAAR_tmp;
                 CAAR_STD[n] += CAAR_tmp*CAAR_tmp;
+                cout << "size of aar_temp : " << AAR_tmp.size() << endl;
+                cout << "size of Caar_temp : " << CAAR_tmp.size() << endl;
+                AAR_tmp.clear();
+                CAAR_tmp.clear();
             }
             for(int j=0;j<T;j++)
             {
                 Avg_AAR[n][j] = (1/MCN)*Avg_AAR[n][j]; 
                 Avg_CAAR[n][j] = (1/MCN)*Avg_CAAR[n][j];
                 AAR_STD[n][j] = sqrt((1/(MCN)*AAR_STD[n][j] - Avg_AAR[n][j]*Avg_AAR[n][j]));
-                CAAR_STD[n][j] = sqrt((1/(MCN))*CAAR_STD[n][j] - Avg_CAAR[n][j]*Avg_CAAR[n][j]); 
+                CAAR_STD[n][j] = sqrt((1/(MCN))*CAAR_STD[n][j] - Avg_CAAR[n][j]*Avg_CAAR[n][j]);
             }
             
             //Avg_AAR[n] = (1/MCN)*Avg_AAR[n]; 

@@ -47,9 +47,9 @@ class Group
         Table GetGroup_Mapping();
         
         //create Groups
-        // virtual void CreateGroups() = 0;
-        // virtual void CreateGroups(int n);
-        // virtual void CreateGroups(Map* stockMapPtr_, int n);
+        virtual void CreateGroups() = 0;
+        virtual void CreateGroups(int n) = 0;
+        virtual void CreateGroups(Map* stockMapPtr_, int n) = 0;
         
         //overloaded subscript operator to return by group name
         vector<string> operator[] (const string& groupname);

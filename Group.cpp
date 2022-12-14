@@ -71,18 +71,32 @@ bool compare(Stocks& a, Stocks&b){
 void Groupby_Surprise::CreateGroups() {
     Group_Mapping.resize(3);
     vector<Stocks> stockVector;
-    for (auto it = stockMapPtr->begin(); it != stockMapPtr->end(); ++it) stockVector.push_back(it->second);
+    for (auto it = stockMapPtr->begin(); it != stockMapPtr->end(); ++it) 
+    {   if(it->first == " ")
+            {
+                continue;
+            }
+        // cout<< "key" << it->first << " : " << it->second.GetTicker() <<endl; 
+        stockVector.push_back(it->second);
+    }
+    /*
+    for (int j =0; j<stockVector.size(); j++ )
+    {
+        cout << "ticker : " << stockVector[j].GetTicker() << endl;
+    }
+    */
     cout << "stock vector populated" << endl;
     sort(stockVector.begin(), stockVector.end(), compare);
     cout << "stock vector sorted" << endl;
     int NoOfStocks = (int)stockVector.size()/N_group;
-    
+    // Group_Mapping.clear();
     for (int i = 0; i < N_group; ++i)
     {   cout << "populated for group number" << i << endl;
-        for (int j = i * NoOfStocks; j < min(i + NoOfStocks, int(stockVector.size())); ++j)
+        for (int j = i * NoOfStocks; j < min((i + 1)*NoOfStocks, int(stockVector.size())); ++j)
         {
             Group_Mapping[i].push_back(stockVector[j].GetTicker());
         }
+        
     }
 }
 

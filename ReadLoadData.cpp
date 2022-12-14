@@ -251,7 +251,7 @@ namespace fre
 		if (handle)
 		{
 			string url_common = "https://eodhistoricaldata.com/api/eod/";
-			string start_date = "2022-03-01";
+			string start_date = "2022-01-01";
 			string end_date = "2022-12-01";
 			string api_token = "637e7bd9087ef4.06157778";  // You must replace this API token with yours
 			

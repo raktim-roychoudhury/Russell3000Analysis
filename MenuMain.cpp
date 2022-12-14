@@ -75,21 +75,33 @@ int main()
 
     map<string, Stocks> GlobalStockMap;
     Stocks Russel;
-    GlobalStockMap["IWV"] = Russel;
-    LoadEarnings(GlobalStockMap);
-    String DateList = GenerateDates();
     
-    FetchData(GlobalStockMap);
-    write2file(GlobalStockMap);
-
+    LoadEarnings(GlobalStockMap);
+    
     Groupby_Surprise gobj(&GlobalStockMap);
     cout << "group obj created" << endl;
     gobj.CreateGroups();
     cout << "groups created" << endl;
     Table groupTable = gobj.GetGroup_Mapping();
-    cout << "Table created" << endl;
+    cout << "Table created" << endl; 
+    cout << groupTable[0].size() <<endl ;
     
+    String DateList = GenerateDates();
+    GlobalStockMap["IWV"] = Russel;
+    FetchData(GlobalStockMap);
+    write2file(GlobalStockMap);
     
+    /*
+    for (int i = 0; i < groupTable[0].size(); i++)
+    {
+        cout << groupTable[0][i] << " " << groupTable[1][i] << " " << groupTable[2][i] << endl;
+    }
+    for(auto it = GlobalStockMap.begin(); it != GlobalStockMap.end(); it++)
+    {
+        cout << "stock - " << it->first << endl;
+    }
+    */
+     
     //temporary vector 
     vector<double> v;
     v.insert(v.begin(),2.0);
@@ -213,7 +225,8 @@ int main()
                             cout<<" Missed Estimate Group summary "<<endl;
                             cout<<" Average Abnormal Returns (AAR) "<<endl;
                             //print object.missaar
-                            Vector vec = boot.GetAAR(0);
+                            cout << "' date - " << GlobalStockMap["GOOG"].GetStartIndex() << endl;
+                            Vector vec = boot.AbnormRet("GOOG");
                             cout << vec << endl;
                         
                             cout<<" Average Abnormal Returns standard deviation (AAR-std) "<<endl;
@@ -317,6 +330,7 @@ int main()
         test = 0;
         
     }
+    
     return 0;
      
 }
