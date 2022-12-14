@@ -104,16 +104,16 @@ int main()
     //String DateList = GenerateDates();
     GlobalStockMap["IWV"] = Russel;
     
-    thread t1(FetchData,std::ref(GlobalStockMap),groupTable[0]);
+    /*thread t1(FetchData,std::ref(GlobalStockMap),groupTable[0]);
     thread t2(FetchData,std::ref(GlobalStockMap),groupTable[1]);
     thread t3(FetchData,std::ref(GlobalStockMap),groupTable[2]);
-    //t1.join();
-    //t2.join();
-    //t3.join();                                  
+    t1.join();
+    t2.join();
+    t3.join();                                  
     //FetchData(GlobalStockMap, groupTable[0]); //String of tickers
     //FetchData(GlobalStockMap, groupTable[1]); //String of tickers
-    //FetchData(GlobalStockMap, groupTable[2]); //String of tickers
-    //FetchData(GlobalStockMap);
+    //FetchData(GlobalStockMap, groupTable[2]); //String of tickers */
+    FetchData(GlobalStockMap);
     CalAbnormalReturns(GlobalStockMap);
     
     
