@@ -159,6 +159,29 @@ void write_to_stock(stringstream &sData, Stocks* stock)
 		{
 			//Date,Open,High,Low,Close,Adjusted_close,Volume
 			//2022-11-01,139.5,141.35,138.06,140.89,140.89,1182851
+			/*
+			stringstream sin(line);
+			getline(sin, sDate, ',');
+			Date.push_back(sDate);
+			
+			getline(sin, sOpen, ',');
+			Open_price.push_back(stod(sOpen));
+			
+			getline(sin, sHigh, ',');
+			High_price.push_back(stod(sHigh));
+			
+			getline(sin, sLow, ',');
+			Low_price.push_back(stod(sLow));
+			
+			getline(sin, sClose, ',');
+			Close_price.push_back(stod(sClose));
+			
+			getline(sin, sAdjClose, ',');
+			Adjusted_close.push_back(stod(sAdjClose));
+			
+			getline(sin, sVolume);
+			volume.push_back(stod(sVolume));
+			*/
 			sDate = line.substr(0, line.find_first_of(','));
 			Date.push_back(sDate);
 			line.erase(line.find_last_of(','));
@@ -239,9 +262,10 @@ void write2file(map<string, Stocks> &data)
 		fout<<"Data from EOD: \n";
 		
 		Vector adj = temp.GetAdjusted_close();
+		Vector close = temp.GetClose_price();
 		for(int i = 0; i < adj.size(); i++)
 		{
-			fout<<adj[i]<<" ";
+			fout<<"Close: "<<close[i]<<"Adj close: "<<adj[i]<<endl;
 		}
 		fout<<endl<<endl;
 		

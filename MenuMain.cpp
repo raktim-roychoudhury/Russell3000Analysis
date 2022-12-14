@@ -9,17 +9,14 @@
 #include <chrono>
 #include <sstream> 
 #include <typeinfo>
-//#include ".h"         //header files 
-//#include ".h"
-//#include ".h"
 #include "ReadLoadData.h"
 #include "Stocks.h"
 #include "Group.h"
 #include "bootstrap.h"
 #include "Matrix.h"
+
 using namespace std;
 using namespace std::chrono;
-//using namespace 
 using namespace fre;
 // vector output print function 
 void print_v(vector<double> v)
@@ -36,7 +33,7 @@ void print_v(vector<double> v)
 //map and vector of vector prints?? are they included in header files ?
 String SetN(int N, map<string, Stocks> &stock_map)
 {
-    cout<<"Printing all tickers: ";
+//    cout<<"Printing all tickers: ";
     auto itr2 = stock_map.begin();
     
     String skipped_tickers;
@@ -44,18 +41,28 @@ String SetN(int N, map<string, Stocks> &stock_map)
     for(;itr2 != stock_map.end(); itr2++)
     {
         //Stocks temp = (itr->second);
-        cout<<itr2->first;
+        //cout<<itr2->first;
         int flag = (itr2->second).SetN(N);
         if(flag == -1)
         {
             skipped_tickers.push_back(itr2->first);
-            cout<<" unable to set"   ;
+            //cout<<" unable to set"   ;
         }
-        cout<<endl;
+        //cout<<endl;
     }
     
     cout<<"\nsize inside SetN: "<<skipped_tickers.size()<<endl;
     return skipped_tickers;
+}
+
+void CalAbnormalReturns(map<string, Stocks> &stock_map)
+{
+    auto itr = stock_map.begin();
+    for(; itr != stock_map.end(); itr++)
+    {
+        (itr->second).CalculateAbnormalReturns(stock_map);
+    }
+    cout<<"Finished AAR\n";
 }
 
 
@@ -97,14 +104,10 @@ int main()
     GlobalStockMap["IWV"] = Russel;
     
     FetchData(GlobalStockMap);
+    CalAbnormalReturns(GlobalStockMap);
+    
     
     skipped_tickers = SetN(90,GlobalStockMap);
-    
-    cout<<"size: "<<skipped_tickers.size()<<endl;
-    for(int i = 0; i < (int)skipped_tickers.size(); i++)
-    {
-        cout<<skipped_tickers[i]<<endl;
-    }
     
     write2file(GlobalStockMap);
     
@@ -157,7 +160,6 @@ int main()
                     skipped_tickers = SetN(integer1, GlobalStockMap);
                     gobj.CreateGroups(skipped_tickers);
                     
-                    // GlobalStockMap["IWV"] = RusselMap["IWV"]; 
                     if (integer1 != N)
                     {
                         cout<<"Error, please enter an integer value error"<<endl;
@@ -196,11 +198,18 @@ int main()
                     {
                         cout<<"Please provide ticker of stock: "<<endl;
                         cin>> tick;
-                        //check each group
-                        // if(object.missgroupcount(tick) == 1) {object.missgroupprint(tick);}
-                        // elseif(object.meetgroupcount(tick) == 1) {object.meetgroupprint(tick);}
-                        // elseif(object.beatgroupcount(tick) == 1) {object.beatgroupprint(tick);}   
-                        // else { cout<< " Error, Ticker not found!. Enter valid ticker <<endl;"}
+                        
+                        if(GlobalStockMap.find(tick) != GlobalStockMap.end())
+                        {
+                            GlobalStockMap[tick].DisplayDetails();
+                        }
+                        else
+                        {
+                            cout<<"Please enter a valid ticker\n";
+                            test = 1;
+                        }
+                        
+                        
                         if(!cin.fail())
                         {
                             cout<<"check case 2 working "<<tick<<endl;

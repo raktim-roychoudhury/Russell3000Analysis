@@ -169,31 +169,26 @@ namespace fre
 			{
 				//Date,Open,High,Low,Close,Adjusted_close,Volume
 				//2022-11-01,139.5,141.35,138.06,140.89,140.89,1182851
-				sDate = line.substr(0, line.find_first_of(','));
+				stringstream sin(line);
+				getline(sin, sDate, ',');
 				Date.push_back(sDate);
-				line.erase(line.find_last_of(','));
 				
-				sOpen = line.substr(line.find_last_of(',') + 1);
+				getline(sin, sOpen, ',');
 				Open_price.push_back(stod(sOpen));
-				line.erase(line.find_last_of(','));
 				
-				sHigh = line.substr(line.find_last_of(',') + 1);
+				getline(sin, sHigh, ',');
 				High_price.push_back(stod(sHigh));
-				line.erase(line.find_last_of(','));
 				
-				sLow = line.substr(line.find_last_of(',') + 1);
+				getline(sin, sLow, ',');
 				Low_price.push_back(stod(sLow));
-				line.erase(line.find_last_of(','));
 				
-				sClose = line.substr(line.find_last_of(',') + 1);
+				getline(sin, sClose, ',');
 				Close_price.push_back(stod(sClose));
-				line.erase(line.find_last_of(','));
 				
-				sAdjClose = line.substr(line.find_last_of(',') + 1);
+				getline(sin, sAdjClose, ',');
 				Adjusted_close.push_back(stod(sAdjClose));
-				line.erase(line.find_last_of(','));
 				
-				sVolume = line.substr(line.find_last_of('\n') + 1);
+				getline(sin, sVolume);
 				volume.push_back(stod(sVolume));
 				
 			}
@@ -206,7 +201,7 @@ namespace fre
 		stock->SetACP(Adjusted_close);
 		stock->SetVol(volume);
 		stock->CalculateReturns();
-		
+		stock->CalculateCumulativeReturns();
 		
 	}
 	void* myrealloc(void* ptr, size_t size)

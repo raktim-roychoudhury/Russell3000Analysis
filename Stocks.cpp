@@ -5,52 +5,14 @@
 #include <vector>
 #include <string>
 #include <set>
+#include <map>
 #include "Stocks.h"
+#include <iostream>
+#include <iomanip>
+
+using namespace std;
 
 namespace fre{
-
-	/*
-	vector<string> GenerateDates()
-    {
-    	set<int> day31({1,3,5,7,8,10,12});
-    	set<int> day30({4,6,9,11});
-    	
-    	vector<string> DateList;
-    	
-    	int days;
-    	
-    	for (int i = 1; i < 13; i++)
-    	{
-    		if(day31.find(i) != day31.end())
-    			days = 31;
-    		else if(day30.find(i) != day30.end())
-    			days = 30;
-    		else
-    			days = 28;
-    		
-    		for(int j = 1; j < days+1; j++)
-    		{
-    			string month;
-    			string date;
-    			
-    			if (i < 10)
-    				month = "0"	+ to_string(i);
-    			else
-    				month = to_string(i);
-    			
-    			if (j < 10)
-    				date = "0" + to_string(j);
-    			else
-    				date = to_string(j);
-    			
-    			string temp_date = "2022-" + month + "-" + date;
-    			
-    			DateList.push_back(temp_date);
-    		}
-    	}
-    	return DateList;
-    }
-    */
 
     int Stocks::SetDates()
 	{
@@ -86,10 +48,74 @@ namespace fre{
 		}
 	}
 	
+	void Stocks::CalculateCumulativeReturns()
+	{
+		
+		Cumulative_returns.push_back(pct_returns[0]);
+		for(int i = 1; i < (int)pct_returns.size(); i++)
+		{
+			Cumulative_returns.push_back(Cumulative_returns.back() + pct_returns[i]);
+		}
+	}
+	
+	void Stocks::CalculateAbnormalReturns(map<string, Stocks> &GlobalStockMap)
+	{
+		Vector Benchmark = GlobalStockMap["IWV"].GetReturns();
+		for(int i = 0; i < (int)pct_returns.size(); i++)
+		{
+			Abnormal_returns.push_back(pct_returns[i] - Benchmark[i]);
+		}
+	}
+	
 	int Stocks::SetN(int N_)
 	{
 		N = N_;
-		return SetDates();
+		int check_present_in_list = SetDates();
+		
+		return check_present_in_list;
+	}
+	
+	void Stocks::DisplayDetails()
+	{
+		cout<<"Stock Daily Prices Dates: \n";
+		for(int i = start_index; i <= end_index; i++)
+		{
+			cout<<Date[i]<<" ";
+			if( (i - start_index + 1) % 10 == 0)
+				cout<<endl;
+		}
+		
+		cout<<"\n\nStock Daily Prices: \n";
+		for(int i = start_index; i <= end_index; i++)
+		{
+			cout<<std::fixed << ::setprecision(3)<<Adjusted_close[i]<<" ";
+			if( (i - start_index + 1) % 10 == 0)
+				cout<<endl;
+		}
+		
+		cout<<"\n\nStock Daily Returns: \n";
+		for(int i = start_index; i <= end_index; i++)
+		{
+			cout<<std::fixed << ::setprecision(3)<<pct_returns[i]<<" ";
+			if( (i - start_index + 1) % 10 == 0)
+				cout<<endl;
+		}
+		
+		cout<<"\n\nStock Cumulative Daily Returns: \n";
+		for(int i = start_index; i <= end_index; i++)
+		{
+			cout<<std::fixed << ::setprecision(3)<<(Cumulative_returns[i] - Cumulative_returns[start_index-1])<<" ";
+			if( (i - start_index + 1) % 10 == 0)
+				cout<<endl;
+		}
+		
+		cout<<"\n\nStock Abnormal Daily Returns: \n";
+		for(int i = start_index; i <= end_index; i++)
+		{
+			cout<<std::fixed << ::setprecision(3)<<Abnormal_returns[i]<<" ";
+			if( (i - start_index + 1) % 10 == 0)
+				cout<<endl;
+		}
 	}
 	
 }

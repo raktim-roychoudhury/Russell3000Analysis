@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <vector>
+#include <map>
 
 using namespace std;
 
@@ -24,6 +25,8 @@ namespace fre
 		Vector Adjusted_close;
 		Vector volume;
 		Vector pct_returns;
+		Vector Abnormal_returns;
+		Vector Cumulative_returns;
 		Matrix Stock_info;
 		
 		double reported_earnings;
@@ -50,6 +53,8 @@ namespace fre
 		Vector GetAdjusted_close() const { return Adjusted_close; }
 		Vector Getvolume() const { return volume; }
 		Vector GetReturns() const {return pct_returns;}
+		Vector GetAbnormalReturns() const { return Abnormal_returns; }
+		Vector GetCumulativeReturns() const { return Cumulative_returns; }
 		
 		void SetDate(const String & dt) { Date = dt; }
 		void SetOP(const Vector & OP) { Open_price = OP; }
@@ -58,8 +63,12 @@ namespace fre
         void SetCP(const Vector& CP) { Close_price = CP; }
         void SetACP(const Vector& ACP) { Adjusted_close = ACP; }
         void SetVol(const Vector& Vol) { volume = Vol; }
-        int SetN(int N_);
         void CalculateReturns();
+        
+        int SetN(int N_);
+        void CalculateAbnormalReturns(map<string, Stocks> &GlobalStockMap);
+        void CalculateCumulativeReturns();
+        void DisplayDetails();
         
         void SetReportedEarnings(const double& re) { reported_earnings = re;}
         void SetEstimatedEarnings(const double& ee) { estimated_earnings = ee;}
