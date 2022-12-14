@@ -28,7 +28,8 @@ namespace fre
     
     int write_data(void* ptr, int size, int nmemb, void* data);
     
-    void FetchData(map<string, Stocks> &stock_map);
+    void FetchData(map<string, Stocks> &stock_map, String group_tickers);
+    //void FetchData(map<string, Stocks> &stock_map);
     
     void write2file(map<string, Stocks> &data);
     

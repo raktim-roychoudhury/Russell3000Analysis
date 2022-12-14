@@ -103,7 +103,10 @@ int main()
     //String DateList = GenerateDates();
     GlobalStockMap["IWV"] = Russel;
     
-    FetchData(GlobalStockMap);
+    FetchData(GlobalStockMap, groupTable[0]); //String of tickers
+    FetchData(GlobalStockMap, groupTable[1]); //String of tickers
+    FetchData(GlobalStockMap, groupTable[2]); //String of tickers
+    //FetchData(GlobalStockMap);
     CalAbnormalReturns(GlobalStockMap);
     
     

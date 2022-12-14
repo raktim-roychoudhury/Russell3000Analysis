@@ -225,7 +225,7 @@ namespace fre
 		return realsize;
 	}
 
-	void FetchData(map<string, Stocks> &stock_map)
+	void FetchData(map<string, Stocks> &stock_map, String group_tickers)     //void FetchData(map<string, Stocks> &stock_map, String group_tickers)
 	{
 		vector<string> symbolList;
 	
@@ -252,13 +252,14 @@ namespace fre
 			
 			auto itr = stock_map.begin();
 			
-			for(; itr != stock_map.end(); itr++)
+			for(int i = 0; i < (int)group_tickers.size(); i++)    //for(; itr != stock_map.end(); itr++) 
+
 			{
 				struct MemoryStruct data;
 				data.memory = NULL;
 				data.size = 0;
 				
-				string symbol = itr->first;
+				string symbol = group_tickers[i];     //itr->first;
 				cout<<"loading "<<symbol<<"...\n";
 				string url_request = url_common + symbol + ".US?" + "from=" + start_date + "&to=" + end_date + "&api_token=" + api_token + "&period=d";
 				
@@ -271,7 +272,7 @@ namespace fre
 				curl_easy_setopt(handle, CURLOPT_SSL_VERIFYHOST, 0);
 				
 				//create a temporary pointer used to access the stock corresponding to the ticker
-				Stocks *ticker = &(itr->second);
+				Stocks *ticker = &stock_map[symbol];  //&(itr->second);
 				
 				
 				//store the data in the Stock class using write_data function
