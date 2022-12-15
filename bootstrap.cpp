@@ -19,13 +19,12 @@
 
 namespace fre
 {
-    Bootstrap::Bootstrap(Group* GroupPtr_, map<string, Stocks>* MapPtr_, int n): GroupPtr(GroupPtr_),MapPtr(MapPtr_)
+    Bootstrap::Bootstrap(Group* GroupPtr_, map<string, Stocks>* MapPtr_, int n): GroupPtr(GroupPtr_),MapPtr(MapPtr_), T(2*n)
     {
-        T = 2*n;
-             
     }
 
-    String Bootstrap :: generateSample(int gr_n) // To be unit tested - with integration 
+    // Random sample generator
+    String Bootstrap :: generateSample(int gr_n)
     {
         int max_size = (GroupPtr->GetGroup_Mapping())[gr_n].size();
         String grouptickers(max_size);
@@ -42,23 +41,14 @@ namespace fre
     	}
     	for (int i = 0; i < (int)sample.size(); i++)
     	{
-    		W[i] = grouptickers[sample[i]];  // operator overloading
-            //cout << W[i] << endl;
+    		W[i] = grouptickers[sample[i]];  
     	}
 	    return W;
     }
     
-
-    // Vector Bootstrap :: VSQRT(const Vector &V)    // unit tested
-    // {
-    //     int d = (int)V.size();
-    //     Vector U(d);
-    //     for (int j = 0; j < d; j++) U[j] = sqrt(V[j]);
-    //     return U;
-    // }
-    
-    // return CAAR calculation across sample stocks (of 1 sample) for 2N timesteps (2N x 1)
-    Vector Bootstrap :: cumsum(const Vector& V) // unit tested
+    // Return cumulative sum of input vectors
+    // Used for CAAR calculation across sample stocks (of 1 sample) for 2N timesteps (2N x 1)
+    Vector Bootstrap :: cumsum(const Vector& V)
     {
         int d = (int)V.size();
         Vector U(d);
@@ -67,17 +57,17 @@ namespace fre
         {
             U[j] = U[j-1] + V[j];
         }
-        return U;
+        return U; 
     }
     
-    
-    Vector Bootstrap :: AbnormRet(string ticker) // To be unit tested - with integration 
+    //Abnormal return calculation
+    Vector Bootstrap :: AbnormRet(string ticker)  
     {
         Vector AbnormReturn = ConstVector(0,T);
         int start, end;
         start = (*MapPtr)[ticker].GetStartIndex();
         end = (*MapPtr)[ticker].GetEndIndex();
-        cout << start - end << endl;
+        
         if ((end - start) != T){
             cout << "Corrupt asset:  " << start << "  " << end << endl;
             
@@ -88,33 +78,26 @@ namespace fre
         Vector Benchmark = (*MapPtr)["IWV"].GetReturns();
         for(int i=0; i<T; i++)
         {
-         //cout << "TIMEPERIOD " << i << endl;
-         // cout << "start + i = " <<  start+i << "  " << R[start+1+i] << "  " << Benchmark[start+1+i] << endl;
          AbnormReturn[i] = R[start+i] - Benchmark[start+i];
-         // cout << AbnormReturn[i] << endl;
         }
         return AbnormReturn;
     }
  
     // return AAR calculation across sample stocks (of 1 sample) for 2N timesteps (2N x 1)
-    Vector Bootstrap :: Cal_AAR(int gr_n) // To be unit tested - with integration 
+    Vector Bootstrap :: Cal_AAR(int gr_n) 
     {
-        cout << "Entering Cal_AAR function." << endl;
-        String sample(M);
         
-        cout<<"generating sample\n";
+        String sample(M);
+       
         Matrix Ave = ConstMatrix(0,M,T);
         sample = generateSample(gr_n);
-        cout<<"finished sampling\n";
+        
         for(int i = 0; i< M; i++)
         {
-            cout << "STARTED STOCK " << sample[i] << endl;
             Vector tmp = AbnormRet(sample[i]);
             for (int k = 0; k< T; k++){
                 Ave[i][k] = tmp[k];
             }
-            //cout << "CALCULATED ABONORMAL RETURN FOR STOCK " << i << endl;
-            //cout << "FINISHED STOCK "<< i << endl;
         }
         Vector average_AAR(T);
         for (int i = 0; i < T; i++){
@@ -123,22 +106,19 @@ namespace fre
             }
             average_AAR[i] = average_AAR[i] / M;
         }
-        cout << "Exiting Cal_AAR function. " << endl;
         return average_AAR;
         
     }
-
-    //number of timesteps: 2N)
-    void Bootstrap :: RunBootstrap()  // To be unit tested - with integration 
+    
+     // Run bootstrap and populate Avg_AAR, AAR-STD, Avg_CAAR, CAAR_STD
+    void Bootstrap :: RunBootstrap()  
     {
-        int N_Group = GroupPtr->GetN(); // number of groups. In this case - 3
+        int N_Group = GroupPtr->GetN(); // number of groups. In this case 3
         //initialize result matrices to 0s
-        Avg_AAR = ConstMatrix(0,N_Group,T);     //group x time 
-        Avg_CAAR = ConstMatrix(0,N_Group,T);    //group x time 
-        AAR_STD = ConstMatrix(0,N_Group,T);   //group x time 
-        CAAR_STD = ConstMatrix(0,N_Group,T); //group x time 
-        
-        cout << "Started Run Bootstrap" << endl;
+        Avg_AAR = ConstMatrix(0,N_Group,T); //group x time 
+        Avg_CAAR = ConstMatrix(0,N_Group,T);//group x time 
+        AAR_STD = ConstMatrix(0,N_Group,T); //group x time 
+        CAAR_STD = ConstMatrix(0,N_Group,T);//group x time 
 
         for(int n = 0; n < N_Group; n++) //iterate through each group
         {
@@ -146,18 +126,16 @@ namespace fre
             for(int i = 0;i < MCN; i++) //iterate through each monte carlo iteration (i.e. Bootstrap iteration 1-40) 
             {
                 Vector AAR_tmp(T), CAAR_tmp(T);
-                cout << "n = " << n << ", i = " << i << endl;
+        
                 AAR_tmp = Cal_AAR(n);
-                Sum_AAR_tmp += AAR_tmp;
-                cout << Sum_AAR_tmp << endl;
+                Sum_AAR_tmp += AAR_tmp; //operator overload
                 AAR_STD[n] = AAR_STD[n] + AAR_tmp*AAR_tmp;
                 CAAR_tmp = cumsum(AAR_tmp);
-                Sum_CAAR_tmp += CAAR_tmp;
-                CAAR_STD[n] += CAAR_tmp*CAAR_tmp;
+                Sum_CAAR_tmp += CAAR_tmp; //operator overload
+                CAAR_STD[n] += CAAR_tmp*CAAR_tmp; //operator overload
             }
-            cout << Sum_AAR_tmp << endl;
             double one_by_MCN = (double)(1.0/MCN);
-            cout << one_by_MCN << endl;
+        
             for(int j=0;j<T;j++)
             {
                 Avg_AAR[n][j] = one_by_MCN*Sum_AAR_tmp[j]; 
@@ -166,16 +144,11 @@ namespace fre
                 CAAR_STD[n][j] = sqrt(one_by_MCN*CAAR_STD[n][j] - Avg_CAAR[n][j]*Avg_CAAR[n][j]);
             }
             cout << Avg_AAR[n] << endl;
-            // Avg_AAR[n] = (1/MCN)*Avg_AAR[n]; 
-            // Avg_CAAR[n] = (1/MCN)*Avg_CAAR[n];
-            // AAR_STD[n] = VSQRT((1/(MCN)*AAR_STD[n] - Avg_AAR[n]*Avg_AAR[n]));
-            // for (int i = 0; i < T; i ++){
-            //     cout << "Avg_AAR["<<i<<"]: " << Avg_AAR[i] << "AAR_STD["<<i<<"]: " << AAR_STD[i] << endl;
-            // }
-            // CAAR_STD[n] = VSQRT((1/(MCN))*CAAR_STD[n] - Avg_CAAR[n]*Avg_CAAR[n]); 
         }
     }
     
+    // Getter functions
+    // Return the vectors of Avg_AAR, AAR-STD, Avg_CAAR, CAAR_STD for each group from respective matrices
     Vector Bootstrap::GetAAR(int gr_index) const
     {
         return Avg_AAR[gr_index];
@@ -193,6 +166,7 @@ namespace fre
         return CAAR_STD[gr_index];
     }
     
+    //Plot GNU Plot for Avg_CAAR for each group (Beat, Meet, Miss)
     void Bootstrap :: plotResults(Vector r1, Vector r2, Vector r3, int N) 
     {
         
@@ -215,7 +189,7 @@ namespace fre
             fprintf(gnuplotPipe,"plot \"%s\" with lines lw 3, \"%s\" with lines lw 3, \"%s\" with lines lw 3 \n",tempDataFileName1, tempDataFileName2, tempDataFileName3);
             fflush(gnuplotPipe);
             
-            //plot figure
+            //plot Avg_CAAR for Beat
             tempDataFile = fopen(tempDataFileName1,"w");
             for (int j = -N; j < N; j++)
             {
@@ -223,7 +197,7 @@ namespace fre
             }
             fclose(tempDataFile);
             
-            //plot figure 2
+            //plot Avg_CAAR for Meet
             tempDataFile = fopen(tempDataFileName2,"w");
             for (int j = -N; j < N; j++)
             {
@@ -231,20 +205,13 @@ namespace fre
             }
             fclose(tempDataFile);
             
-            //plot figure 3
+            //plot Avg_CAAR for Miss
             tempDataFile = fopen(tempDataFileName3,"w");
             for (int j = -N; j < N; j++)
             {
                 fprintf(tempDataFile, "%i %lf\n", j, r3[j + N]);
             }
             fclose(tempDataFile);
-            
-            //printf("press enter to continue...");
-            //getchar();
-            //remove(tempDataFileName1);
-            //remove(tempDataFileName2);
-            //remove(tempDataFileName3);
-            //fprintf(gnuplotPipe,"exit \n");
         } 
         else 
         {        

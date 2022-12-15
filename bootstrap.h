@@ -13,7 +13,7 @@ namespace fre
     class Bootstrap
     {
         private:
-            int MCN = 10;   // no. of bootstrap (monte carlo) iterations 
+            int MCN = 40;   // no. of bootstrap (monte carlo) iterations 
             int M = 80;     // size of each sample from a group 
             int T; //number of days (2N)
             Group* GroupPtr;
@@ -29,29 +29,31 @@ namespace fre
             Bootstrap(Group* GroupPtr_, map<string, Stocks>* myMap_, int n);
             ~Bootstrap(){}
             
-            Vector Cal_AAR(const vector<string>& sample); // return AAR calculation across sample stocks (of 1 sample) for 2N timesteps (2N x 1)
-            Vector Cal_CAAR(const Vector& AAR); // return CAAR calculation across sample stocks (of 1 sample) for 2N timesteps (2N x 1)
-     
             
+            // Setter functions
             void SetMCN(int N_);
             void SetM(int M_);
-            void RunBootstrap(); // return
+            
+            // Run bootstrap and populate Avg_AAR, AAR-STD, Avg_CAAR, CAAR_STD
+            void RunBootstrap(); 
+            
+            //Plot GNU Plot for Avg_CAAR for each group (Beat, Meet, Miss)
             void plotResults(Vector r1, Vector r2, Vector r3, int N);
             
+            //Random sample generator
             String generateSample(int gr_n);
-            // Vector VSQRT(const Vector &V);
-            Vector cumsum(const Vector& V);
+            //Abnormal return calculation
             Vector AbnormRet(string ticker);
-            Vector Cal_AAR(int gr_n);
+            //Return AAR calculation across sample stocks (of 1 sample) for 2N timesteps (2N x 1)
+            Vector Cal_AAR(int gr_n); 
+            //Return cumulative sum of input vectors
+            Vector cumsum(const Vector& V);
             
-            
+
             // Getter functions
             Vector GetAAR(int gr_index) const;
             Vector GetAAR_STD(int gr_index) const;
             Vector GetCAAR(int gr_index) const;
             Vector GetCAAR_STD(int gr_index) const;
-            
     };
-    
-    
 }
