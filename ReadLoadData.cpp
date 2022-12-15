@@ -17,70 +17,71 @@ using namespace std;
 
 namespace fre
 {
+    void plotResults(double* xData, double* Beat, double* Meet, double* Miss, int dataSize, const char* title, const char* yLabel) {
+   
+	    FILE *gnuplotPipe,*tempDataFile;
+	    
+	    const char *tempDataFileName1 = "Beat";
+	    const char *tempDataFileName2 = "Meet";
+	    const char *tempDataFileName3 = "Miss";
+	    
+	    cout<<"Created filenames\n";
+	    
+	    double x,y, x2, y2, x3, y3;
+	    int i;
+	    
+	    //set up the gnu plot
+	    gnuplotPipe = popen("gnuplot -persist", "w");
+	    fprintf(gnuplotPipe, "set grid\n");
+	    fprintf(gnuplotPipe, "set title '%s'\n", title);
+	    fprintf(gnuplotPipe, "set arrow from 0,graph(0,0) to 0,graph(1,1) nohead lc rgb 'red'\n");
+	    fprintf(gnuplotPipe, "set xlabel 'Announcement Date'\nset ylabel '%s'\n", yLabel);
+	    
+	    cout<<"Created pipeline\n";
+	    
+	    if (gnuplotPipe) 
+	    {
+	        
+	        fprintf(gnuplotPipe,"plot \"%s\" with lines, \"%s\" with lines, \"%s\" with lines\n",tempDataFileName1, tempDataFileName2, tempDataFileName3);
+	        fflush(gnuplotPipe);
+	        
+	        //plot figure 1
+	        tempDataFile = fopen(tempDataFileName1,"w");
+	        for (i=0; i < dataSize; i++) {
+	            x = xData[i];
+	            y = Beat[i];
+	            fprintf(tempDataFile,"%lf %lf\n",x,y);
+	        }
+	        fclose(tempDataFile);
+	        
+	        //plot figure 2
+	        tempDataFile = fopen(tempDataFileName2,"w");
+	        for (i=0; i < dataSize; i++) {
+	            x2 = xData[i];
+	            y2 = Meet[i];
+	            fprintf(tempDataFile,"%lf %lf\n",x2,y2);
+	        }
+	        fclose(tempDataFile);
+	        
+	        //plot figure 3
+	        tempDataFile = fopen(tempDataFileName3,"w");
+	        for (i=0; i < dataSize; i++) {
+	            x3 = xData[i];
+	            y3 = Miss[i];
+	            fprintf(tempDataFile,"%lf %lf\n",x3,y3);
+	        }
+	        fclose(tempDataFile);
+	        
+	        printf("press enter to continue...\n");
+	        getchar();
 
-	void plotResults(double* xData, double* Beat, double* Meet, double* Miss, int dataSize, const char* title, const char* yLabel) {
-       
-        FILE *gnuplotPipe,*tempDataFile;
-        
-        const char *tempDataFileName1 = "Beat";
-        const char *tempDataFileName2 = "Meet";
-        const char *tempDataFileName3 = "Miss";
-        
-        double x,y, x2, y2, x3, y3;
-        int i;
-        
-        //set up the gnu plot
-        gnuplotPipe = popen("gnuplot -persist", "w");
-        fprintf(gnuplotPipe, "set grid\n");
-        fprintf(gnuplotPipe, "set title '%s'\n", title);
-        fprintf(gnuplotPipe, "set arrow from 0,graph(0,0) to 0,graph(1,1) nohead lc rgb 'red'\n");
-        fprintf(gnuplotPipe, "set xlabel 'Announcement Date'\nset ylabel '%s'\n", yLabel);
-        
-        if (gnuplotPipe) 
-        {
-            
-            fprintf(gnuplotPipe,"plot \"%s\" with lines, \"%s\" with lines, \"%s\" with lines\n",tempDataFileName1, tempDataFileName2, tempDataFileName3);
-            fflush(gnuplotPipe);
-            
-            //plot figure 1
-            tempDataFile = fopen(tempDataFileName1,"w");
-            for (i=0; i <= dataSize; i++) {
-                x = xData[i];
-                y = Beat[i];
-                fprintf(tempDataFile,"%lf %lf\n",x,y);
-            }
-            fclose(tempDataFile);
-            
-            //plot figure 2
-            tempDataFile = fopen(tempDataFileName2,"w");
-            for (i=0; i <= dataSize; i++) {
-                x2 = xData[i];
-                y2 = Meet[i];
-                fprintf(tempDataFile,"%lf %lf\n",x2,y2);
-            }
-            fclose(tempDataFile);
-            
-            //plot figure 3
-            tempDataFile = fopen(tempDataFileName3,"w");
-            for (i=0; i <= dataSize; i++) {
-                x3 = -xData[i];
-                y3 = Meet[i];
-                fprintf(tempDataFile,"%lf %lf\n",x3,y3);
-            }
-            fclose(tempDataFile);
-            
-            printf("press enter to continue...");
-            getchar();
-            remove(tempDataFileName1);
-            remove(tempDataFileName2);
-            remove(tempDataFileName3);
-            fprintf(gnuplotPipe,"exit \n");
-        } 
-        else 
-        {        
-            printf("gnuplot not found...");    
-        }
-    } 
+	    } 
+	    else 
+	    {        
+	        printf("gnuplot not found...");    
+	    }
+	} 
+    
 	const char* cIWB3000SymbolFile = "Russell3000EarningsAnnouncements.csv"; 
 
 	string FormatDate(string Date)
@@ -112,7 +113,6 @@ namespace fre
 		string line, ticker, earnings_date, period_ending, estimated_earnings, reported_earnings, surprise_earnings, surprise_perecent;
 		
 		int c = 0;
-		cout<<"reading..."<<endl;
 		while (!fin.eof())
 		{
 			
@@ -224,12 +224,11 @@ namespace fre
 		}
 		return realsize;
 	}
-	//void FetchData(map<string, Stocks> &stock_map, String group_tickers)   
+
 	void FetchData(map<string, Stocks> &stock_map)
 	{
+		
 		vector<string> symbolList;
-	
-	
 		// declaration of an object CURL 
 		CURL* handle;
 	
@@ -252,15 +251,14 @@ namespace fre
 			
 			auto itr = stock_map.begin();
 			
-			//for(int i = 0; i < (int)group_tickers.size(); i++)    
-			for(; itr != stock_map.end(); itr++) 
+			for(; itr != stock_map.end(); itr++)
 			{
 				struct MemoryStruct data;
 				data.memory = NULL;
 				data.size = 0;
 				
-				string symbol = itr->first;    //group_tickers[i];
-				cout<<"loading "<<symbol<<"...\n";
+				string symbol = itr->first;
+				
 				string url_request = url_common + symbol + ".US?" + "from=" + start_date + "&to=" + end_date + "&api_token=" + api_token + "&period=d";
 				
 				//set the url to call the data from
@@ -272,7 +270,7 @@ namespace fre
 				curl_easy_setopt(handle, CURLOPT_SSL_VERIFYHOST, 0);
 				
 				//create a temporary pointer used to access the stock corresponding to the ticker
-				Stocks *ticker = &(itr->second);   //&stock_map[symbol];
+				Stocks *ticker = &(itr->second);
 				
 				
 				//store the data in the Stock class using write_data function
@@ -308,39 +306,6 @@ namespace fre
 	
 		// release resources acquired by curl_global_init() 
 		curl_global_cleanup();
-	}
-	
-	void write2file(map<string, Stocks> &data)
-	{
-		cout<<"Writinging..."<<endl;
-		ofstream fout;
-		fout.open("temp.txt");
-		
-		auto itr = data.begin();
-		for (; itr != data.end() ; itr++)
-		{
-			Stocks temp = itr->second;
-			fout<<itr->first<<", "<<temp.GetTicker()<<", " <<temp.GetEarningsDate()<<", "<<temp.GetEstimatedEarnings()<<", "<<temp.GetSurprisePerecent()<<endl;
-			fout<<"Data from EOD: \n";
-			
-			Vector adj = temp.GetAdjusted_close();
-			
-			fout<<"Adj Close: "<<adj.size()<<endl;
-			for(int i = 0; i < (int)adj.size(); i++)
-			{
-				fout<<adj[i]<<" ";
-			}
-			
-			Vector pct_returns = temp.GetReturns();
-			
-			fout<<endl<<"Percent returns: "<<pct_returns.size()<<endl;
-			for(int i = 0; i < (int)pct_returns.size(); i++)
-			{
-				fout<<pct_returns[i]<<" ";
-			}
-			
-			fout<<endl<<endl;
-		}
 	}
 
 }

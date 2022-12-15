@@ -16,24 +16,20 @@ namespace fre{
 
     int Stocks::SetDates()
 	{
-		cout<<" Found index";
 		auto itr = find(Date.begin(), Date.end(), earnings_date);
 
 		int index = std::distance(Date.begin(), itr);
 		
 		if(index + N >= (int)Adjusted_close.size())
 		{
-			cout<<" "<<index<<" ";
 			return -1;
 		}
 		else
 		{
 			start_date = Date[index - N];
 			end_date = Date[(index + N)];
-			
-			cout<<" start: "<<start_date<<" end: "<<end_date; 
-			start_index = index - N;
-			end_index = index + N;
+			SetStartIndex(index - N);
+			SetEndIndex(index + N);
 		}
 		return 1;
 	}
@@ -88,7 +84,7 @@ namespace fre{
 		cout<<"\n\nStock Daily Prices: \n";
 		for(int i = start_index; i <= end_index; i++)
 		{
-			cout<<std::fixed << ::setprecision(3)<<Adjusted_close[i]<<" ";
+			cout<<std::fixed << std::setprecision(3)<<Adjusted_close[i]<<" ";
 			if( (i - start_index + 1) % 10 == 0)
 				cout<<endl;
 		}
@@ -96,7 +92,7 @@ namespace fre{
 		cout<<"\n\nStock Daily Returns: \n";
 		for(int i = start_index; i <= end_index; i++)
 		{
-			cout<<std::fixed << ::setprecision(3)<<pct_returns[i]<<" ";
+			cout<<std::fixed << std::setprecision(3)<<pct_returns[i]<<" ";
 			if( (i - start_index + 1) % 10 == 0)
 				cout<<endl;
 		}
@@ -104,7 +100,7 @@ namespace fre{
 		cout<<"\n\nStock Cumulative Daily Returns: \n";
 		for(int i = start_index; i <= end_index; i++)
 		{
-			cout<<std::fixed << ::setprecision(3)<<(Cumulative_returns[i] - Cumulative_returns[start_index-1])<<" ";
+			cout<<std::fixed << std::setprecision(3)<<(Cumulative_returns[i] - Cumulative_returns[start_index-1])<<" ";
 			if( (i - start_index + 1) % 10 == 0)
 				cout<<endl;
 		}
@@ -112,7 +108,7 @@ namespace fre{
 		cout<<"\n\nStock Abnormal Daily Returns: \n";
 		for(int i = start_index; i <= end_index; i++)
 		{
-			cout<<std::fixed << ::setprecision(3)<<Abnormal_returns[i]<<" ";
+			cout<<std::fixed << std::setprecision(3)<<Abnormal_returns[i]<<" ";
 			if( (i - start_index + 1) % 10 == 0)
 				cout<<endl;
 		}

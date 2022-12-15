@@ -69,7 +69,7 @@ namespace fre
         end = (*MapPtr)[ticker].GetEndIndex();
         
         if ((end - start) != T){
-            cout << "Corrupt asset:  " << start << "  " << end << endl;
+            
             
             return AbnormReturn;
         }
@@ -143,7 +143,7 @@ namespace fre
                 AAR_STD[n][j] = sqrt((one_by_MCN*AAR_STD[n][j] - Avg_AAR[n][j]*Avg_AAR[n][j]));
                 CAAR_STD[n][j] = sqrt(one_by_MCN*CAAR_STD[n][j] - Avg_CAAR[n][j]*Avg_CAAR[n][j]);
             }
-            cout << Avg_AAR[n] << endl;
+            
         }
     }
     
