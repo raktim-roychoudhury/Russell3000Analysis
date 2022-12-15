@@ -57,10 +57,6 @@ class Group
 
 class Groupby_Surprise: public Group
 {
-    //comparator to sort stocks by attribute
-    //protected:
-        //bool compare(Stocks& a,Stocks& b);
-        
     public:
         //constructor
         Groupby_Surprise(Map* stockMapPtr_);

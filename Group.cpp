@@ -72,28 +72,16 @@ void Groupby_Surprise::CreateGroups(String skipped_tickers)
     vector<Stocks> stockVector;
     for (auto it = stockMapPtr->begin(); it != stockMapPtr->end(); ++it) 
     {   
-        if(std::find(skipped_tickers.begin(), skipped_tickers.end(), it->first) != skipped_tickers.end())
+        if(std::find(skipped_tickers.begin(), skipped_tickers.end(), it->first) != skipped_tickers.end()) //skipping stocks which do not have (2N+1) data points
             continue;
-        else if (it->first == "IWV")
+        else if (it->first == "IWV") //skipping benchmark
             continue;
-            
-        // cout<< "key" << it->first << " : " << it->second.GetTicker() <<endl; 
         stockVector.push_back(it->second);
     }
-    cout<<"\nGrouping based on: "<<stockVector.size()<<endl;
-    /*
-    for (int j =0; j<stockVector.size(); j++ )
-    {
-        cout << "ticker : " << stockVector[j].GetTicker() << endl;
-    }
-    */
-    cout << "stock vector populated" << endl;
     sort(stockVector.begin(), stockVector.end(), compare);
-    cout << "stock vector sorted" << endl;
     int NoOfStocks = (int)stockVector.size()/N_group;
-    // Group_Mapping.clear();
     for (int i = 0; i < N_group; ++i)
-    {   cout << "populated for group number" << i << endl;
+    {   
         for (int j = i * NoOfStocks; j < min((i + 1)*NoOfStocks, int(stockVector.size())); ++j)
         {
             Group_Mapping[i].push_back(stockVector[j].GetTicker());
