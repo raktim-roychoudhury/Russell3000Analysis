@@ -40,6 +40,7 @@ namespace fre
             
             //Plot GNU Plot for Avg_CAAR for each group (Beat, Meet, Miss)
             void plotResults(Vector r1, Vector r2, Vector r3, int N);
+            void DisplayResults(int n);
             
             //Random sample generator
             String generateSample(int gr_n);

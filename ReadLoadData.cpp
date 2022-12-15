@@ -17,13 +17,19 @@ using namespace std;
 
 namespace fre
 {
-    void plotResults(double* xData, double* Beat, double* Meet, double* Miss, int dataSize, const char* title, const char* yLabel) {
+    void plotResults(Vector Beat, Vector Meet, Vector Miss, int N) {
    
 	    FILE *gnuplotPipe,*tempDataFile;
+	    int nIntervals = 2*N;
+	    
+	    
+	    double* xData = (double*) malloc((nIntervals+1)*sizeof(double));
 	    
 	    const char *tempDataFileName1 = "Beat";
 	    const char *tempDataFileName2 = "Meet";
 	    const char *tempDataFileName3 = "Miss";
+	    
+	    int dataSize = 2*N;
 	    
 	    cout<<"Created filenames\n";
 	    
@@ -33,9 +39,9 @@ namespace fre
 	    //set up the gnu plot
 	    gnuplotPipe = popen("gnuplot -persist", "w");
 	    fprintf(gnuplotPipe, "set grid\n");
-	    fprintf(gnuplotPipe, "set title '%s'\n", title);
+	    fprintf(gnuplotPipe, "set title '%s'\n", "Avg_CAAR plot");
 	    fprintf(gnuplotPipe, "set arrow from 0,graph(0,0) to 0,graph(1,1) nohead lc rgb 'red'\n");
-	    fprintf(gnuplotPipe, "set xlabel 'Announcement Date'\nset ylabel '%s'\n", yLabel);
+	    fprintf(gnuplotPipe, "set xlabel 'Announcement Date'\nset ylabel '%s'\n", "Percentage(%)");
 	    
 	    cout<<"Created pipeline\n";
 	    
@@ -44,6 +50,12 @@ namespace fre
 	        
 	        fprintf(gnuplotPipe,"plot \"%s\" with lines, \"%s\" with lines, \"%s\" with lines\n",tempDataFileName1, tempDataFileName2, tempDataFileName3);
 	        fflush(gnuplotPipe);
+	        
+	        for(int i = -N; i < N; i++)
+	        {
+	        	xData[i+N] = i;
+	        }
+	        
 	        
 	        //plot figure 1
 	        tempDataFile = fopen(tempDataFileName1,"w");
@@ -225,10 +237,11 @@ namespace fre
 		return realsize;
 	}
 
-	void FetchData(map<string, Stocks> &stock_map)
+	void FetchData(map<string, Stocks> &stock_map, String group_tickers)
 	{
-		
 		vector<string> symbolList;
+	
+	
 		// declaration of an object CURL 
 		CURL* handle;
 	
@@ -250,14 +263,19 @@ namespace fre
 			string api_token = "638d6a442c56c0.76328612";  // You must replace this API token with yours
 			
 			auto itr = stock_map.begin();
-			
-			for(; itr != stock_map.end(); itr++)
-			{
+			for(int i = 0; i < (int)group_tickers.size(); i++) 
+			//for(; itr != stock_map.end(); itr++)
+			{	
+				
+				if(group_tickers[i].length()==0)                          // changes 
+				{
+					continue;
+				}
 				struct MemoryStruct data;
 				data.memory = NULL;
 				data.size = 0;
 				
-				string symbol = itr->first;
+				string symbol = group_tickers[i];//itr->first;
 				
 				string url_request = url_common + symbol + ".US?" + "from=" + start_date + "&to=" + end_date + "&api_token=" + api_token + "&period=d";
 				
@@ -270,7 +288,7 @@ namespace fre
 				curl_easy_setopt(handle, CURLOPT_SSL_VERIFYHOST, 0);
 				
 				//create a temporary pointer used to access the stock corresponding to the ticker
-				Stocks *ticker = &(itr->second);
+				Stocks *ticker =&stock_map[symbol];// &(itr->second);
 				
 				
 				//store the data in the Stock class using write_data function

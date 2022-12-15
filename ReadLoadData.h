@@ -23,11 +23,11 @@ namespace fre
     
     string FormatDate(string Date);
     
-    void plotResults(double* xData, double* Beat, double* Meet, double* Miss, int dataSize, const char* title, const char* yLabel);
+    void plotResults(Vector Beat, Vector Meet, Vector Miss, int N);
     
     void LoadEarnings(map<string, Stocks> &data);
     
     int write_data(void* ptr, int size, int nmemb, void* data);
     
-    void FetchData(map<string, Stocks> &stock_map);
+    void FetchData(map<string, Stocks> &stock_map, String group_tickers);
 }

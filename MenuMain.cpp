@@ -14,6 +14,7 @@
 #include "Group.h"
 #include "bootstrap.h"
 #include "Matrix.h"
+#include <thread>
 
 using namespace std;
 using namespace std::chrono;
@@ -53,7 +54,7 @@ String SetN(int N, map<string, Stocks> &stock_map)
         //cout<<endl;
     }
     
-    cout<<"\nsize inside SetN: "<<skipped_tickers.size()<<endl;
+    cout<<"\nWarning: No. of stocks with no data for given n (will be skipped): "<<skipped_tickers.size()<<endl<<endl;
     return skipped_tickers;
 }
 
@@ -64,7 +65,6 @@ void CalAbnormalReturns(map<string, Stocks> &stock_map)
     {
         (itr->second).CalculateAbnormalReturns(stock_map);
     }
-    cout<<"Finished AAR\n";
 }
 
 
@@ -96,7 +96,7 @@ int main()
     
     while(true)
     {
-        cout<<"Menu: "<<endl;
+        cout<<"\nMenu: "<<endl;
         cout<<"1) Enter N to retrieve 2N+1 historical prices for all stocks (Please allow around 5 mins to fetch)"<<endl;
         cout<<"2) Pull information for one stock from one group. "<<endl;
         cout<<"3) Display AAR, AAR-std, CAAR, CAAR-std for one group. "<<endl;
@@ -104,7 +104,7 @@ int main()
         cout<<"5) Exit program "<<endl<<endl;
         cout<<"Please select appropriate option number:  "<<endl;;
         cin>>x;
-   
+        
         switch(x)
         {
             case 1:
@@ -129,18 +129,26 @@ int main()
                         if (fetched == 0)
                         {
                             cout<<"Loading data, please allow around 5 mins to load...\n";
-                        
                             auto start = high_resolution_clock::now();
-                            FetchData(GlobalStockMap);
+                            
+                            thread t1(FetchData,std::ref(GlobalStockMap),groupTable[0]);
+                            thread t2(FetchData,std::ref(GlobalStockMap),groupTable[1]);
+                            thread t3(FetchData,std::ref(GlobalStockMap),groupTable[2]);
+                            t1.join();
+                            t2.join();
+                            t3.join();
+                            
+                            String Index;
+                            
+                            Index.push_back("IWV");
+                            FetchData(GlobalStockMap,Index);
+                            
                             auto stop = high_resolution_clock::now();
                             auto duration = duration_cast<seconds>(stop - start);
-                            cout<<"Fetched data seconds: "<<duration.count()<<endl;
+                            cout<<"Fetched data in seconds: "<<duration.count()<<endl;
                             fetched  = 1;
                             CalAbnormalReturns(GlobalStockMap);
                         }
-                        
-                        
-                        
                         skipped_tickers = SetN(N, GlobalStockMap);
                         gobj.CreateGroups(skipped_tickers);
                         test = 1;
@@ -162,7 +170,7 @@ int main()
                         cout<<"Please provide ticker of stock: "<<endl;
                         cin>> tick;
                         
-                        if(GlobalStockMap.find(tick) != GlobalStockMap.end())
+                        if(GlobalStockMap.find(tick) != GlobalStockMap.end() and std::find(skipped_tickers.begin(), skipped_tickers.end(), tick) == skipped_tickers.end())
                         {
                             GlobalStockMap[tick].DisplayDetails();
                         }
@@ -193,7 +201,7 @@ int main()
             {
                 Bootstrap boot(&gobj, &GlobalStockMap, N);
                 boot.RunBootstrap();
-                cout << "Bootstrap object created" << endl;
+                cout << "\nBootstrap object created" << endl;
                 if(N>=60 && N<=80)
                 {
                     while(test==0)
@@ -212,97 +220,21 @@ int main()
                         else if(group == 1)   //switch?
                         {
                             cout<<" Beat Estimate Group summary "<<endl;
-                            cout<<" Average Abnormal Returns (AAR) "<<endl;
-                            cout << "AAR - Group 1 "<< endl;
-                            Vector vec0_mean; 
-                            vec0_mean = 100*boot.GetAAR(0);
-                            cout << vec0_mean << endl;
-                            
-                            cout<<" Average Abnormal Returns standard deviation (AAR-std) "<<endl;
-                            cout << "AAR_STD - Group 1 "<< endl;
-                            Vector vec0_std;
-                            vec0_std = 100*boot.GetAAR_STD(0);
-                            cout << vec0_std << endl;
-                            
-                            cout<<" Cumilative Average Abnormal Returns (CAAR) "<<endl;
-                            cout << "CAAR - Group 1 "<< endl;
-                            Vector vec0_CAAR;
-                            vec0_CAAR = 100*boot.GetCAAR(0);
-                            cout << vec0_CAAR << endl;
-                            
-                            cout<<" Cumilative Average Abnormal Returns (CAAR-std) "<<endl;
-                            cout << "CAAR_STD - Group 1 "<< endl;
-                            Vector vec0_Cstd;
-                            vec0_Cstd = 100*boot.GetCAAR_STD(0);
-                            cout << vec0_Cstd << endl;
+                            boot.DisplayResults(group-1);
 
                             test = 1;
                         }
                         else if(group == 2)
                         {
-                            
-                            
-
-                            cout<<" Beat Estimate Group summary "<<endl;
-                            cout<<" Average Abnormal Returns (AAR) "<<endl;
-                            cout << "AAR - Group 2 "<< endl;
-                            Vector vec1_mean; 
-                            vec1_mean = 100*boot.GetAAR(1);
-                            cout << vec1_mean << endl;
-                    
-                            cout<<" Average Abnormal Returns standard deviation (AAR-std) "<<endl;
-                            cout << "AAR_STD - Group 2 "<< endl;
-                            Vector vec1_std;
-                            vec1_std = 100*boot.GetAAR_STD(1);
-                            cout << vec1_std << endl;
-                        
-                            cout<<" Cumilative Average Abnormal Returns (CAAR) "<<endl;
-                            cout << "CAAR - Group 2 "<< endl;
-                            Vector vec1_cumulative;
-                            vec1_cumulative = 100*boot.GetCAAR(1);
-                            cout << vec1_cumulative << endl;
-
-                        
-                            cout<<" Cumilative Average Abnormal Returns (CAAR-std) "<<endl;
-                            cout << "CAAR_STD - Group 2 "<< endl;
-                            Vector vec1_cumstd;
-                            vec1_cumstd = 100*boot.GetCAAR_STD(1);
-                            cout << vec1_cumstd << endl;
-                            //print object.misscaarstd
-                            
+                            cout<<"\n Meet Estimate Group summary "<<endl;
+                            boot.DisplayResults(group-1);
                             test = 1;
                         }
                         else if(group == 3)
                         {
                             
-                            cout<<" Meet Estimate Group summary "<<endl;
-                            cout<<" Average Abnormal Returns (AAR) "<<endl;
-                            cout << "AAR - Group 3 "<< endl;
-                            Vector vec2_mean; 
-                            vec2_mean = 100*boot.GetAAR(2);
-                            cout << vec2_mean << endl;
-                            
-                
-                            cout<<" Average Abnormal Returns standard deviation (AAR-std) "<<endl;
-                            cout << "AAR_STD - Group 3 "<< endl;
-                            Vector vec2_std;
-                            vec2_std = 100*boot.GetAAR_STD(2);
-                            cout << vec2_std<<endl;
-                            
-                        
-                            cout<<" Cumilative Average Abnormal Returns (CAAR) "<<endl;
-                            cout << "CAAR - Group 3 "<< endl;
-                            Vector vec2_CAAR;
-                            vec2_CAAR = 100*boot.GetCAAR(2);
-                            cout << vec2_CAAR << endl;
-                            
-                        
-                            cout<<" Cumilative Average Abnormal Returns (CAAR-std) "<<endl;
-                            cout << "CAAR_STD - Group 3 "<< endl;
-                            Vector vec2_Cstd;
-                            vec2_Cstd = 100*boot.GetCAAR_STD(2);
-                            cout << vec2_Cstd << endl;
-                            
+                            cout<<" Miss Estimate Group summary "<<endl;
+                            boot.DisplayResults(group-1);
                             test = 1;
                         }
                         else 
@@ -333,34 +265,7 @@ int main()
                     Vector g2 = GlobalBoot.GetCAAR(1);
                     Vector g3 = GlobalBoot.GetCAAR(2);
                     
-                    int i = 0;
-                    int nIntervals = integer1*2;
-                    
-                    cout<<"Plot size: "<<nIntervals<<endl;
-
-                    
-                    double* xData = (double*) malloc((nIntervals+1)*sizeof(double));
-                    double* yData = (double*) malloc((nIntervals+1)*sizeof(double));
-                    double* yData2 = (double*) malloc((nIntervals+1)*sizeof(double));
-                    double* yData3 = (double*) malloc((nIntervals+1)*sizeof(double));
-                    
-                    for (i = 0; i < nIntervals; i++) {
-                        xData[i] = i-integer1;
-                    }
-                    for (i = 0; i <= nIntervals; i++) {
-                        yData[i] = g1[i];
-                    }
-                    for (i = 0; i <= nIntervals; i++) {
-                        yData2[i] = g2[i];
-                    }
-                    for (i = 0; i <= nIntervals; i++) {
-                        yData3[i] = g3[i];
-                    }
-                    
-                    const char *title = "Avg CAAR for 3 groups";
-                    const char *yLabel = "Avg CAAR(%)";
-                        
-                    plotResults(xData, yData, yData2, yData3, nIntervals, title, yLabel);
+                    plotResults(100*g1, 100*g2, 100*g3, N);
                     
                     GlobalBoot.plotResults(100*g1, 100*g2, 100*g3, N);
                     

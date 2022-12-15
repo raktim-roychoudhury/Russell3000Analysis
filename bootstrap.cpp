@@ -17,6 +17,8 @@
 #include "Matrix.h"
 #include "Group.h"
 
+using namespace std;
+
 namespace fre
 {
     Bootstrap::Bootstrap(Group* GroupPtr_, map<string, Stocks>* MapPtr_, int n): GroupPtr(GroupPtr_),MapPtr(MapPtr_), T(2*n)
@@ -146,6 +148,55 @@ namespace fre
             
         }
     }
+    
+    void Bootstrap::DisplayResults(int n)
+    {
+        string group_name;
+        if(n == 0)
+            group_name = "Beat";
+        else if (n == 1)
+            group_name = "Meet";
+        else
+            group_name = "Miss";
+            
+        cout<<"\nAverage Abnormal Returns (AAR) "<<endl;
+        cout << "AAR - Group "<<group_name<< endl;
+        for(int i = 0; i < (int)Avg_AAR[n].size(); i++)
+        {
+            cout<<setw(10)<<setfill(' ')<<std::fixed << std::setprecision(3)<<100*Avg_AAR[n][i]<<" ";
+            if(i%10 == 0)
+                cout<<endl;
+        }
+        
+        cout<<" \nAverage Abnormal Returns standard deviation (AAR-std) "<<endl;
+        cout << "AAR_STD - Group "<<group_name<< endl;
+        for(int i = 0; i < (int)AAR_STD[n].size(); i++)
+        {
+            cout<<std::setw(10)<<std::setfill(' ')<<std::fixed << std::setprecision(3)<<100*AAR_STD[n][i]<<" ";
+            if(i%10 == 0)
+                cout<<endl;
+        }
+        
+        cout<<"\nCumilative Average Abnormal Returns (CAAR) "<<endl;
+        cout << "CAAR - Group "<<group_name<< endl;
+        
+        for(int i = 0; i < (int)Avg_CAAR[n].size(); i++)
+        {
+            cout<<std::setw(10)<<std::setfill(' ')<<std::fixed << std::setprecision(3)<<100*Avg_CAAR[n][i]<<" ";
+            if(i%10 == 0)
+                cout<<endl;
+        }
+        
+        cout<<" \nCumilative Average Abnormal Returns (CAAR-std) "<<endl;
+        cout << "CAAR_STD - Group "<<group_name<< endl;
+        for(int i = 0; i < (int)CAAR_STD[n].size(); i++)
+        {
+            cout<<setw(10)<<setfill(' ')<<std::fixed << std::setprecision(3)<<100*CAAR_STD[n][i]<<" ";
+            if(i%10 == 0)
+                cout<<endl;
+        }
+    }
+    
     
     // Getter functions
     // Return the vectors of Avg_AAR, AAR-STD, Avg_CAAR, CAAR_STD for each group from respective matrices
