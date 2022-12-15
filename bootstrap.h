@@ -13,7 +13,7 @@ namespace fre
     class Bootstrap
     {
         private:
-            int MCN = 40;   // no. of bootstrap (monte carlo) iterations 
+            int MCN = 10;   // no. of bootstrap (monte carlo) iterations 
             int M = 80;     // size of each sample from a group 
             int T; //number of days (2N)
             Group* GroupPtr;
@@ -26,7 +26,7 @@ namespace fre
             Matrix Avg_CAAR; //group x time   
     
         public:
-            Bootstrap(Group* GroupPtr_, map<string, Stocks>* myMap_);
+            Bootstrap(Group* GroupPtr_, map<string, Stocks>* myMap_, int n);
             ~Bootstrap(){}
             
             Vector Cal_AAR(const vector<string>& sample); // return AAR calculation across sample stocks (of 1 sample) for 2N timesteps (2N x 1)
@@ -36,9 +36,10 @@ namespace fre
             void SetMCN(int N_);
             void SetM(int M_);
             void RunBootstrap(); // return
+            void plotResults(Vector r1, Vector r2, Vector r3, int N);
             
             String generateSample(int gr_n);
-            //Vector VSQRT(Vector &V);
+            // Vector VSQRT(const Vector &V);
             Vector cumsum(const Vector& V);
             Vector AbnormRet(string ticker);
             Vector Cal_AAR(int gr_n);

@@ -93,13 +93,6 @@ int main()
     
     String skipped_tickers;
     
-    Groupby_Surprise gobj(&GlobalStockMap);
-    cout << "group obj created" << endl;
-    gobj.CreateGroups(skipped_tickers);
-    cout << "groups created" << endl;
-    Table groupTable = gobj.GetGroup_Mapping();
-    cout << "Table created" << endl; 
-    cout << groupTable[0].size() <<endl ;
     
     //String DateList = GenerateDates();
     GlobalStockMap["IWV"] = Russel;
@@ -118,6 +111,14 @@ int main()
     
     
     skipped_tickers = SetN(90,GlobalStockMap);
+    
+    Groupby_Surprise gobj(&GlobalStockMap);
+    cout << "group obj created" << endl;
+    gobj.CreateGroups(skipped_tickers);
+    cout << "groups created" << endl;
+    Table groupTable = gobj.GetGroup_Mapping();
+    cout << "Table created" << endl; 
+    cout << groupTable[0].size() <<endl ;
     
     write2file(GlobalStockMap);
     
@@ -240,14 +241,14 @@ int main()
             }
             case 3:
             {
-                Bootstrap boot(&gobj, &GlobalStockMap);
+                Bootstrap boot(&gobj, &GlobalStockMap, N);
                 boot.RunBootstrap();
                 cout << "Bootstrap object created" << endl;
                 if(N>=60 && N<=90)
                 {
                     while(test==0)
                     {
-                        cout<<"1) Missed \t 2) Beat \t 3) Meet"<<endl;
+                        cout<<"1) Beat \t 2) Meet \t 3) Miss"<<endl;
                         cout<< "Please select appropriate group number: "<<endl; 
                         cin>>group;
                         int integer2 = (int) group;
@@ -260,26 +261,75 @@ int main()
                         }
                         else if(group == 1)   //switch?
                         {
-                            cout<<" Missed Estimate Group summary "<<endl;
+                            cout<<" Beat Estimate Group summary "<<endl;
                             cout<<" Average Abnormal Returns (AAR) "<<endl;
                             //print object.missaar
-                            cout << "' date - " << GlobalStockMap["GOOG"].GetStartIndex() << endl;
-                            Vector vec = boot.AbnormRet("GOOG");
-                            cout << vec << endl;
-                        
-                            cout<<" Average Abnormal Returns standard deviation (AAR-std) "<<endl;
-                            //print object.missaarstd
-                            vec.clear();
-                            vec = boot.GetAAR_STD(0);
-                            cout << vec << endl;
-                
-                            cout<<" Cumilative Average Abnormal Returns (CAAR) "<<endl;
-                            //print object.misscarr
-                            //print_v(v);
-                
-                            cout<<" Cumilative Average Abnormal Returns (CAAR-std) "<<endl;
-                            //print object.misscaarstd
-                            //print_v(v);
+                            // cout << "' date - " << GlobalStockMap["GOOG"].GetStartIndex() << endl;
+                            // Vector vec = boot.AbnormRet("GOOG");
+                            // cout << vec << endl;
+                    
+                            cout << "AAR - Group 1 "<< endl;
+                            Vector vec0_mean; 
+                            vec0_mean = 100*boot.GetAAR(0);
+                            cout << vec0_mean << endl;
+                            
+                            cout << "AAR_STD - Group 1 "<< endl;
+                            Vector vec0_std;
+                            vec0_std = 100*boot.GetAAR_STD(0);
+                            cout << vec0_std << endl;
+                            
+                            cout << "CAAR - Group 1 "<< endl;
+                            Vector vec0_CAAR;
+                            vec0_CAAR = 100*boot.GetCAAR(0);
+                            cout << vec0_CAAR << endl;
+                            
+                            cout << "CAAR_STD - Group 1 "<< endl;
+                            Vector vec0_Cstd;
+                            vec0_Cstd = 100*boot.GetCAAR_STD(0);
+                            cout << vec0_Cstd << endl;
+
+                            cout << "AAR - Group 2 "<< endl;
+                            Vector vec1_mean; 
+                            vec1_mean = 100*boot.GetAAR(1);
+                            cout << vec1_mean << endl;
+
+                            cout << "AAR_STD - Group 2 "<< endl;
+                            Vector vec1_std;
+                            vec1_std = 100*boot.GetAAR_STD(1);
+                            cout << vec1_std << endl;
+                            
+                            cout << "CAAR - Group 2 "<< endl;
+                            Vector vec1_CAAR;
+                            vec1_CAAR = 100*boot.GetCAAR(1);
+                            cout << vec1_CAAR << endl;
+                            
+                            cout << "CAAR_STD - Group 2 "<< endl;
+                            Vector vec1_Cstd;
+                            vec1_Cstd = 100*boot.GetCAAR_STD(1);
+                            cout << vec1_Cstd << endl;
+                            
+                            cout << "AAR - Group 3 "<< endl;
+                            Vector vec2_mean; 
+                            vec2_mean = 100*boot.GetAAR(2);
+                            cout << vec2_mean << endl;
+                            
+                            cout << "AAR_STD - Group 3 "<< endl;
+                            Vector vec2_std;
+                            vec2_std = 100*boot.GetAAR_STD(2);
+                            cout << vec2_std<<endl;
+                            
+                            cout << "CAAR - Group 3 "<< endl;
+                            Vector vec2_CAAR;
+                            vec2_CAAR = 100*boot.GetCAAR(2);
+                            cout << vec2_CAAR << endl;
+                            
+                            cout << "CAAR_STD - Group 3 "<< endl;
+                            Vector vec2_Cstd;
+                            vec2_Cstd = 100*boot.GetCAAR_STD(2);
+                            cout << vec2_Cstd << endl;
+                            
+                            boot.plotResults(vec0_CAAR,vec1_CAAR,vec2_CAAR,N);
+                            
                             test = 1;
                         }
                         else if(group == 2)
