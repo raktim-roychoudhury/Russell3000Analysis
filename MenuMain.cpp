@@ -86,6 +86,7 @@ int main()
     GlobalStockMap["IWV"] = Russel;
     
     Groupby_Surprise gobj(&GlobalStockMap);
+    gobj.CreateGroups(skipped_tickers);
     
     Table groupTable = gobj.GetGroup_Mapping();
     
@@ -96,7 +97,7 @@ int main()
     
     while(true)
     {
-        cout<<"\nMenu: "<<endl;
+        cout<<"\n\nMenu: "<<endl;
         cout<<"1) Enter N to retrieve 2N+1 historical prices for all stocks (Please allow around 5 mins to fetch)"<<endl;
         cout<<"2) Pull information for one stock from one group. "<<endl;
         cout<<"3) Display AAR, AAR-std, CAAR, CAAR-std for one group. "<<endl;
@@ -257,9 +258,6 @@ int main()
             {   
                 if(N>=60 && N<=80)
                 {
-                    
-                    cout<<"CAAR for all 3 groups "<<endl;
-                    //object.plot
                     
                     Vector g1 = GlobalBoot.GetCAAR(0);
                     Vector g2 = GlobalBoot.GetCAAR(1);
