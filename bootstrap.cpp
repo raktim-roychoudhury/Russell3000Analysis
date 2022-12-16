@@ -165,9 +165,9 @@ namespace fre
         cout << "AAR - Group "<<group_name<< endl;
         for(int i = 0; i < (int)Avg_AAR[n].size(); i++)
         {
+            if(i%10 == 0) cout << endl;
             cout<<setw(10)<<setfill(' ')<<std::fixed << std::setprecision(3)<<100*Avg_AAR[n][i]<<" ";
-            if(i%10 == 0)
-                cout<<endl;
+
         }
         
 
@@ -176,9 +176,8 @@ namespace fre
         cout << "AAR_STD - Group "<<group_name<< endl;
         for(int i = 0; i < (int)AAR_STD[n].size(); i++)
         {
+            if(i%10 == 0) cout << endl;
             cout<<std::setw(10)<<std::setfill(' ')<<std::fixed << std::setprecision(3)<<100*AAR_STD[n][i]<<" ";
-            if(i%10 == 0)
-                cout<<endl;
         }
         cout<<"\n\nCumilative Average Abnormal Returns (CAAR) "<<endl;
 
@@ -186,9 +185,10 @@ namespace fre
         
         for(int i = 0; i < (int)Avg_CAAR[n].size(); i++)
         {
+        
+            if(i%10 == 0) cout << endl;
             cout<<std::setw(10)<<std::setfill(' ')<<std::fixed << std::setprecision(3)<<100*Avg_CAAR[n][i]<<" ";
-            if(i%10 == 0)
-                cout<<endl;
+
         }
         
 
@@ -196,9 +196,8 @@ namespace fre
         cout << "CAAR_STD - Group "<<group_name<< endl;
         for(int i = 0; i < (int)CAAR_STD[n].size(); i++)
         {
+            if(i%10 == 0) cout << endl;
             cout<<setw(10)<<setfill(' ')<<std::fixed << std::setprecision(3)<<100*CAAR_STD[n][i]<<" ";
-            if(i%10 == 0)
-                cout<<endl;
         }
     }
     
