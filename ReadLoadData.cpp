@@ -31,8 +31,6 @@ namespace fre
 	    
 	    int dataSize = 2*N;
 	    
-	    cout<<"Created filenames\n";
-	    
 	    double x,y, x2, y2, x3, y3;
 	    int i;
 	    
@@ -43,7 +41,6 @@ namespace fre
 	    fprintf(gnuplotPipe, "set arrow from 0,graph(0,0) to 0,graph(1,1) nohead lc rgb 'red'\n");
 	    fprintf(gnuplotPipe, "set xlabel 'Announcement Date'\nset ylabel '%s'\n", "Percentage(%)");
 	    
-	    cout<<"Created pipeline\n";
 	    
 	    if (gnuplotPipe) 
 	    {
@@ -83,8 +80,6 @@ namespace fre
 	            fprintf(tempDataFile,"%lf %lf\n",x3,y3);
 	        }
 	        fclose(tempDataFile);
-	        
-	        printf("press enter to continue...\n");
 	        getchar();
 
 	    } 
@@ -262,12 +257,11 @@ namespace fre
 			string end_date = "2022-12-31";
 			string api_token = "638d6a442c56c0.76328612";  // You must replace this API token with yours
 			
-			auto itr = stock_map.begin();
+			
 			for(int i = 0; i < (int)group_tickers.size(); i++) 
-			//for(; itr != stock_map.end(); itr++)
 			{	
 				
-				if(group_tickers[i].length()==0)                          // changes 
+				if(group_tickers[i].length()==0)                          
 				{
 					continue;
 				}
