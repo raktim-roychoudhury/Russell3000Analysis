@@ -159,7 +159,9 @@ namespace fre
         else
             group_name = "Miss";
             
-        cout<<"\nAverage Abnormal Returns (AAR) "<<endl;
+
+        cout<<"\n\nAverage Abnormal Returns (AAR) "<<endl;
+
         cout << "AAR - Group "<<group_name<< endl;
         for(int i = 0; i < (int)Avg_AAR[n].size(); i++)
         {
@@ -168,7 +170,9 @@ namespace fre
                 cout<<endl;
         }
         
-        cout<<" \nAverage Abnormal Returns standard deviation (AAR-std) "<<endl;
+
+        cout<<"\n\nAverage Abnormal Returns standard deviation (AAR-std) "<<endl;
+
         cout << "AAR_STD - Group "<<group_name<< endl;
         for(int i = 0; i < (int)AAR_STD[n].size(); i++)
         {
@@ -176,8 +180,8 @@ namespace fre
             if(i%10 == 0)
                 cout<<endl;
         }
-        
-        cout<<"\nCumilative Average Abnormal Returns (CAAR) "<<endl;
+        cout<<"\n\nCumilative Average Abnormal Returns (CAAR) "<<endl;
+
         cout << "CAAR - Group "<<group_name<< endl;
         
         for(int i = 0; i < (int)Avg_CAAR[n].size(); i++)
@@ -187,7 +191,8 @@ namespace fre
                 cout<<endl;
         }
         
-        cout<<" \nCumilative Average Abnormal Returns (CAAR-std) "<<endl;
+
+        cout<<"\n\nCumilative Average Abnormal Returns (CAAR-std) "<<endl;
         cout << "CAAR_STD - Group "<<group_name<< endl;
         for(int i = 0; i < (int)CAAR_STD[n].size(); i++)
         {
@@ -270,6 +275,3 @@ namespace fre
         }
     }
 }
-
-
-
