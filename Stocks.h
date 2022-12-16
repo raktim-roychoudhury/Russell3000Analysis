@@ -37,6 +37,8 @@ namespace fre
 		string start_date;
 		string end_date;
 		string ticker;
+		string period_ending;
+		string group;
 		
 		int N;
 		int start_index;
@@ -63,9 +65,12 @@ namespace fre
         void SetCP(const Vector& CP) { Close_price = CP; }
         void SetACP(const Vector& ACP) { Adjusted_close = ACP; }
         void SetVol(const Vector& Vol) { volume = Vol; }
+        void SetEarningsPeriod(string period_ending_) { period_ending = period_ending_;}
         void CalculateReturns();
         void SetStartIndex(int N_) {start_index = N_;}
         void SetEndIndex(int N_) {end_index = N_;}
+        void SetGroup(string group_) {group = group_;}
+        
         
         
         int SetN(int N_);
@@ -90,6 +95,7 @@ namespace fre
         string GetEarningsDate() { return earnings_date; }
         string GetStartDate() { return start_date;}
         string GetEndDate() { return end_date;}
+        string GetGroup() { return group; }
         int GetStartIndex() const { return start_index; }
         int GetEndIndex() const { return end_index; }
         int GetN() const {return N; }

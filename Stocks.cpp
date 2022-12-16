@@ -73,6 +73,17 @@ namespace fre{
 	
 	void Stocks::DisplayDetails()
 	{
+		
+		cout<<"Ticker: "<<ticker<<endl;
+		cout<<"Earnings Announcement Date: "<<earnings_date<<endl;
+		cout<<"Earnings Period Ending: "<<period_ending<<endl;
+		cout<<"Earning Estimate: $"<<estimated_earnings<<endl;
+		cout<<"Reported Earnings per share: $"<<reported_earnings<<endl;
+		cout<<"Earnings Surprise: $"<<surprise_earnings<<endl;
+		cout<<"Earnings surprise percent: "<<surprise_perecent<<"%"<<endl;
+		//cout<<"Group: "<<group<<endl<<endl;
+		
+		
 		cout<<"Stock Daily Prices Dates: \n";
 		for(int i = start_index; i <= end_index; i++)
 		{
@@ -91,7 +102,7 @@ namespace fre{
 		}
 		
 		cout<<"\n\nStock Daily Returns: \n";
-		for(int i = start_index; i <= end_index; i++)
+		for(int i = start_index; i < end_index; i++)
 		{
 			cout<<setw(10)<<setfill(' ')<<std::fixed << std::setprecision(3)<<pct_returns[i]<<" ";
 			if( (i - start_index + 1) % 10 == 0)
@@ -99,7 +110,7 @@ namespace fre{
 		}
 		
 		cout<<"\n\nStock Cumulative Daily Returns: \n";
-		for(int i = start_index; i <= end_index; i++)
+		for(int i = start_index; i < end_index; i++)
 		{
 			cout<<setw(10)<<setfill(' ')<<std::fixed << std::setprecision(3)<<(Cumulative_returns[i] - Cumulative_returns[start_index-1])<<" ";
 			if( (i - start_index + 1) % 10 == 0)
@@ -107,7 +118,7 @@ namespace fre{
 		}
 		
 		cout<<"\n\nStock Abnormal Daily Returns: \n";
-		for(int i = start_index; i <= end_index; i++)
+		for(int i = start_index; i < end_index; i++)
 		{
 			cout<<setw(10)<<setfill(' ')<<std::fixed << std::setprecision(3)<<Abnormal_returns[i]<<" ";
 			if( (i - start_index + 1) % 10 == 0)

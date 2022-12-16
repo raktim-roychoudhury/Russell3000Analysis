@@ -92,7 +92,8 @@ int main()
     
     Bootstrap GlobalBoot;
     // create object of bootstrap or our stock object with our data Bootstrap test;
-   
+    Matrix AAR;
+    
     int fetched = 0;
     
     while(true)
@@ -150,6 +151,11 @@ int main()
                             fetched  = 1;
                             CalAbnormalReturns(GlobalStockMap);
                         }
+                        
+                        AAR = GlobalBoot.GetAAR();
+                        if(AAR.size() != 0)
+                            AAR.clear();
+                            
                         skipped_tickers = SetN(N, GlobalStockMap);
                         gobj.CreateGroups(skipped_tickers);
                         test = 1;
@@ -258,7 +264,7 @@ int main()
             {   
                 if(N>=60 && N<=80)
                 {   
-                    Matrix AAR = GlobalBoot.GetAAR();
+                    
                     if(AAR.size() == 0)
                     {
                         cout<<"Error, Please run Bootstrap in Option 3 first";

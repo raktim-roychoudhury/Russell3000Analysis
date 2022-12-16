@@ -144,6 +144,7 @@ namespace fre
 			
 			temp.SetTicker(ticker);
 			temp.SetEarningsDate(FormatDate(earnings_date));
+			temp.SetEarningsPeriod(period_ending);
 			temp.SetEstimatedEarnings(stod(estimated_earnings));
 			temp.SetReportedEarnings(stod(reported_earnings));
 			temp.SetSurpriseEarnings(stod(surprise_earnings));
