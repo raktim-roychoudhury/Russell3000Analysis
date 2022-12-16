@@ -81,7 +81,7 @@ namespace fre{
 		cout<<"Reported Earnings per share: $"<<reported_earnings<<endl;
 		cout<<"Earnings Surprise: $"<<surprise_earnings<<endl;
 		cout<<"Earnings surprise percent: "<<surprise_perecent<<"%"<<endl;
-		//cout<<"Group: "<<group<<endl<<endl;
+		cout<<"Group: "<<group<<endl<<endl;
 		
 		
 		cout<<"Stock Daily Prices Dates: \n";

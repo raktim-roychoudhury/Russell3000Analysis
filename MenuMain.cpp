@@ -125,7 +125,7 @@ int main()
                         
                         if (fetched == 0)
                         {
-                            cout<<"Loading data, please allow around 5 mins to load...\n";
+                            cout<<"Loading data, please allow around 2 mins to load...\n";
                             auto start = high_resolution_clock::now();
                             
                             thread t1(FetchData,std::ref(GlobalStockMap),groupTable[0]);

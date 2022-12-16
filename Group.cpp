@@ -85,6 +85,9 @@ void Groupby_Surprise::CreateGroups(String skipped_tickers)
         for (int j = i * NoOfStocks; j < min((i + 1)*NoOfStocks, int(stockVector.size())); ++j)
         {
             Group_Mapping[i].push_back(stockVector[j].GetTicker());
+            if (i==0) (*stockMapPtr)[stockVector[j].GetTicker()].SetGroup("Beat");
+            else if (i == 1) (*stockMapPtr)[stockVector[j].GetTicker()].SetGroup("Meet");
+            else if (i == 2) (*stockMapPtr)[stockVector[j].GetTicker()].SetGroup("Miss");
         }
         
     }
