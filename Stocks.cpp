@@ -76,7 +76,8 @@ namespace fre{
 		cout<<"Stock Daily Prices Dates: \n";
 		for(int i = start_index; i <= end_index; i++)
 		{
-			cout<<setw(15)<<setfill(' ')<<Date[i]<<" ";
+			cout<<setw(13)<<setfill(' ')<<Date[i]<<" ";
+
 			if( (i - start_index + 1) % 10 == 0)
 				cout<<endl;
 		}
