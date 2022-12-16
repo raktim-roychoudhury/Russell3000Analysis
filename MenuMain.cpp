@@ -19,19 +19,6 @@
 using namespace std;
 using namespace std::chrono;
 using namespace fre;
-// vector output print function 
-
-
-void print_v(vector<double> v)
-{
-    auto itr = v.begin();
-    for (;itr != v.end(); itr++)
-    {
-        cout << *itr << " " << fixed << setprecision(3);
-        
-    }
-    cout <<endl;
-}
 
 //map and vector of vector prints?? are they included in header files ?
 String SetN(int N, map<string, Stocks> &stock_map)
@@ -54,7 +41,15 @@ String SetN(int N, map<string, Stocks> &stock_map)
         //cout<<endl;
     }
     
-    cout<<"\nWarning: No. of stocks with no data for given n (will be skipped): "<<skipped_tickers.size()<<endl<<endl;
+    cout<<"\nWarning: No. of stocks with no data for given n (will be skipped): "<<skipped_tickers.size()<<endl;
+    cout<<"Tickers for these stocks: "<<endl;
+    for(int i = 0; i < (int)skipped_tickers.size(); i++)
+    {
+        cout<<setw(8)<<setfill(' ')<<skipped_tickers[i]<<" ";
+        if((i+1)%10 == 0)
+            cout<<endl;
+        
+    }
     return skipped_tickers;
 }
 
