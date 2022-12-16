@@ -53,6 +53,7 @@ namespace fre
             
 
             // Getter functions
+            Matrix GetAAR() {return Avg_AAR;}
             Vector GetAAR(int gr_index) const;
             Vector GetAAR_STD(int gr_index) const;
             Vector GetCAAR(int gr_index) const;

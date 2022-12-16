@@ -92,7 +92,7 @@ int main()
     
     Bootstrap GlobalBoot;
     // create object of bootstrap or our stock object with our data Bootstrap test;
-    
+   
     int fetched = 0;
     
     while(true)
@@ -177,8 +177,8 @@ int main()
                         }
                         else
                         {
-                            cout<<"Please enter a valid ticker\n";
-                            test = 1;
+                            cout<<"Error, Please enter a valid ticker. Example: Try 'GOOG'\n";
+                            break;
                         }
                         
                         
@@ -200,11 +200,11 @@ int main()
             }
             case 3:
             {
-                Bootstrap boot(&gobj, &GlobalStockMap, N);
-                boot.RunBootstrap();
-                cout << "\nBootstrap object created" << endl;
                 if(N>=60 && N<=80)
-                {
+                {   
+                    Bootstrap boot(&gobj, &GlobalStockMap, N);
+                    boot.RunBootstrap();
+                    cout << "\nBootstrap object created" << endl;
                     while(test==0)
                     {
                         cout<<"1) Beat \t 2) Meet \t 3) Miss"<<endl;
@@ -257,8 +257,13 @@ int main()
             case 4:
             {   
                 if(N>=60 && N<=80)
-                {
-                    
+                {   
+                    Matrix AAR = GlobalBoot.GetAAR();
+                    if(AAR.size() == 0)
+                    {
+                        cout<<"Error, Please run Bootstrap in Option 3 first";
+                        break;
+                    }
                     Vector g1 = GlobalBoot.GetCAAR(0);
                     Vector g2 = GlobalBoot.GetCAAR(1);
                     Vector g3 = GlobalBoot.GetCAAR(2);
