@@ -247,6 +247,7 @@ int main()
                     
                     }
                     GlobalBoot = boot;
+                    AAR = GlobalBoot.GetAAR();
                     
                 }
                 
