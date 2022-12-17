@@ -161,7 +161,7 @@ int main()
                         cin.clear();
                     }
                 }
-                //break;
+                
             }
             else if(x == "2")
             {   
@@ -198,7 +198,7 @@ int main()
                 {
                     cout<<"Data has not yet been retrieved! Try retrieving data first using Option 1 in Main Menu!"<<endl;
                 }
-                //break;
+                
             }
             else if(x == "3")
             {
@@ -254,7 +254,7 @@ int main()
                 {
                     cout<<"Data has not yet been retrieved! Try retrieving data first using Option 1 in Main Menu!"<<endl;
                 }
-                //break;
+                
             }
             else if (x == "4")
             {   
@@ -264,15 +264,19 @@ int main()
                     if(AAR.size() == 0)
                     {
                         cout<<"Error, Please run Bootstrap in Option 3 first";
-                        //break;
+                
                     }
-                    Vector g1 = GlobalBoot.GetCAAR(0);
-                    Vector g2 = GlobalBoot.GetCAAR(1);
-                    Vector g3 = GlobalBoot.GetCAAR(2);
+                    else
+                    {
+                        Vector g1 = GlobalBoot.GetCAAR(0);
+                        Vector g2 = GlobalBoot.GetCAAR(1);
+                        Vector g3 = GlobalBoot.GetCAAR(2);
+                        
+                        plotResults(100*g1, 100*g2, 100*g3, N);
+                        
+                        GlobalBoot.plotResults(100*g1, 100*g2, 100*g3, N);    
+                    }
                     
-                    plotResults(100*g1, 100*g2, 100*g3, N);
-                    
-                    GlobalBoot.plotResults(100*g1, 100*g2, 100*g3, N);
                     
                 }
                 else
