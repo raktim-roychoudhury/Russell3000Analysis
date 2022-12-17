@@ -66,7 +66,8 @@ void CalAbnormalReturns(map<string, Stocks> &stock_map)
 int main() 
 {
     
-    int x,group,test =0;  // menu option and number of days 
+    int group,test =0;  // menu option and number of days 
+    string x;
     string tick;
     int N=0;
     int integer1;
@@ -102,9 +103,8 @@ int main()
         cout<<"Please select appropriate option number:  "<<endl;;
         cin>>x;
         
-        switch(x)
-        {
-            case 1:
+        
+            if(x == "1")
             {
 
                 while(test==0)
@@ -161,9 +161,9 @@ int main()
                         cin.clear();
                     }
                 }
-                break;
+                //break;
             }
-            case 2:
+            else if(x == "2")
             {   
                 if (N>=60 && N<=80)
                 {
@@ -180,7 +180,7 @@ int main()
                         else
                         {
                             cout<<"Error, Please enter a valid ticker. Example: Try 'GOOG'\n";
-                            break;
+                            //break;
                         }
                         
                         
@@ -198,9 +198,9 @@ int main()
                 {
                     cout<<"Data has not yet been retrieved! Try retrieving data first using Option 1 in Main Menu!"<<endl;
                 }
-                break;
+                //break;
             }
-            case 3:
+            else if(x == "3")
             {
                 if(N>=60 && N<=80)
                 {   
@@ -254,9 +254,9 @@ int main()
                 {
                     cout<<"Data has not yet been retrieved! Try retrieving data first using Option 1 in Main Menu!"<<endl;
                 }
-                break;
+                //break;
             }
-            case 4:
+            else if (x == "4")
             {   
                 if(N>=60 && N<=80)
                 {   
@@ -264,7 +264,7 @@ int main()
                     if(AAR.size() == 0)
                     {
                         cout<<"Error, Please run Bootstrap in Option 3 first";
-                        break;
+                        //break;
                     }
                     Vector g1 = GlobalBoot.GetCAAR(0);
                     Vector g2 = GlobalBoot.GetCAAR(1);
@@ -279,19 +279,20 @@ int main()
                 {
                     cout<<"Data has not yet been retrieved! Try retrieving data first using Option 1 in Main Menu!"<<endl;
                 }
-                break;
+                //break;
             }
-            case 5:
+            else if(x == "5")
             {
                 exit(0);
             }
-            default: 
+            else 
+            {
                 cout<<"Error, Please select valid option "<< endl;
                 cin.clear();
                 test = 1;
-                break;
-            
-        }
+                //break;
+            }
+        
          
         test = 0;
         
