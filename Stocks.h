@@ -43,6 +43,7 @@ namespace fre
 		int N;
 		int start_index;
 		int end_index;
+		int full_data;
 		
 	  public:
 		Stocks(){}

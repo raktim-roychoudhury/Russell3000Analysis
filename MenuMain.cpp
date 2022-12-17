@@ -172,9 +172,10 @@ int main()
                         cout<<"Please provide ticker of stock: "<<endl;
                         cin>> tick;
                         
-                        if(GlobalStockMap.find(tick) != GlobalStockMap.end() and std::find(skipped_tickers.begin(), skipped_tickers.end(), tick) == skipped_tickers.end())
+                        if(GlobalStockMap.find(tick) != GlobalStockMap.end())
                         {
                             GlobalStockMap[tick].DisplayDetails();
+                            test = 1;
                         }
                         else
                         {
