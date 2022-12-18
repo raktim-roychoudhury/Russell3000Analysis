@@ -61,7 +61,7 @@ Groupby_Surprise::Groupby_Surprise(Map* stockMapPtr_): Group(stockMapPtr_){}
 Groupby_Surprise::~Groupby_Surprise(){}
 
 //comparator 
-bool compare(Stocks& a, Stocks&b){
+bool compare(Stocks& a, Stocks& b){
     return (a.GetSurprisePerecent() > b.GetSurprisePerecent());
 }
 
