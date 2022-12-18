@@ -75,7 +75,7 @@ namespace fre {
     Vector& operator+=(Vector& V, const Vector& W)
     {
         int d = (int)V.size();
-        for (int j = 0; j < d; j++) V[j] = V[j] + W[j];
+        for (int j = 0; j < d; j++) V[j] += W[j];
         return V;
     }
 

@@ -121,6 +121,7 @@ namespace fre
         Avg_CAAR = ConstMatrix(0,N_Group,T);//group x time 
         AAR_STD = ConstMatrix(0,N_Group,T); //group x time 
         CAAR_STD = ConstMatrix(0,N_Group,T);//group x time 
+        Results.resize(N_Group); //initialize Results Matrix
 
         for(int n = 0; n < N_Group; n++) //iterate through each group
         {
@@ -131,7 +132,7 @@ namespace fre
         
                 AAR_tmp = Cal_AAR(n);
                 Sum_AAR_tmp += AAR_tmp; //operator overload
-                AAR_STD[n] = AAR_STD[n] + AAR_tmp*AAR_tmp;
+                AAR_STD[n] += AAR_tmp*AAR_tmp;
                 CAAR_tmp = cumsum(AAR_tmp);
                 Sum_CAAR_tmp += CAAR_tmp; //operator overload
                 CAAR_STD[n] += CAAR_tmp*CAAR_tmp; //operator overload
@@ -146,6 +147,10 @@ namespace fre
                 CAAR_STD[n][j] = sqrt(one_by_MCN*CAAR_STD[n][j] - Avg_CAAR[n][j]*Avg_CAAR[n][j]);
             }
             
+            Results[n].push_back(Avg_AAR[n]);
+            Results[n].push_back(AAR_STD[n]);
+            Results[n].push_back(Avg_CAAR[n]);
+            Results[n].push_back(CAAR_STD[n]);
         }
     }
     
@@ -179,7 +184,7 @@ namespace fre
             if(i%10 == 0) cout << endl;
             cout<<std::setw(10)<<std::setfill(' ')<<std::fixed << std::setprecision(3)<<100*AAR_STD[n][i]<<" ";
         }
-        cout<<"\n\nCumilative Average Abnormal Returns (CAAR) "<<endl;
+        cout<<"\n\nCumulative Average Abnormal Returns (CAAR) "<<endl;
 
         cout << "CAAR - Group "<<group_name<< endl;
         
@@ -192,7 +197,7 @@ namespace fre
         }
         
 
-        cout<<"\n\nCumilative Average Abnormal Returns (CAAR-std) "<<endl;
+        cout<<"\n\nCumulative Average Abnormal Returns (CAAR-std) "<<endl;
         cout << "CAAR_STD - Group "<<group_name<< endl;
         for(int i = 0; i < (int)CAAR_STD[n].size(); i++)
         {

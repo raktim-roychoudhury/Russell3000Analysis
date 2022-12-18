@@ -23,7 +23,8 @@ namespace fre
             Matrix AAR_STD; //group x time   
             Matrix CAAR_STD; //group x time   
             Matrix Avg_AAR; //group x time   
-            Matrix Avg_CAAR; //group x time   
+            Matrix Avg_CAAR; //group x time  
+            vector<Matrix> Results; // group x output(AAR,AAR_STD,CAAR,CAAR_STD) x time 
     
         public:
             Bootstrap() {}
@@ -53,7 +54,12 @@ namespace fre
             
 
             // Getter functions
-            Matrix GetAAR() {return Avg_AAR;}
+            Matrix GetAAR() const {return Avg_AAR;}
+            Matrix GetAAR_STD() const {return AAR_STD;}
+            Matrix GetCAAR() const {return Avg_CAAR;}
+            Matrix GetCAAR_STD() const {return CAAR_STD;}
+            vector<Matrix> GetResults() const {return Results;}
+            
             Vector GetAAR(int gr_index) const;
             Vector GetAAR_STD(int gr_index) const;
             Vector GetCAAR(int gr_index) const;
