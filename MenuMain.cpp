@@ -23,22 +23,20 @@ using namespace fre;
 //map and vector of vector prints?? are they included in header files ?
 String SetN(int N, map<string, Stocks> &stock_map)
 {
-//    cout<<"Printing all tickers: ";
+
     auto itr2 = stock_map.begin();
     
     String skipped_tickers;
     
     for(;itr2 != stock_map.end(); itr2++)
     {
-        //Stocks temp = (itr->second);
-        //cout<<itr2->first;
         int flag = (itr2->second).SetN(N);
         if(flag == -1)
         {
             skipped_tickers.push_back(itr2->first);
             
         }
-        //cout<<endl;
+        
     }
     
     cout<<"\nWarning: No. of stocks with no data for given n (will be skipped): "<<skipped_tickers.size()<<endl;
@@ -95,7 +93,7 @@ int main()
     while(true)
     {
         cout<<"\n\nMenu: "<<endl;
-        cout<<"1) Enter N to retrieve 2N+1 historical prices for all stocks (Please allow around 5 mins to fetch)"<<endl;
+        cout<<"1) Enter N to retrieve 2N+1 historical prices for all stocks (Please allow around 2 mins to fetch)"<<endl;
         cout<<"2) Pull information for one stock from one group. "<<endl;
         cout<<"3) Display AAR, AAR-std, CAAR, CAAR-std for one group. "<<endl;
         cout<<"4) Display gnuplot plot for CAAR of all 3 groups.  "<<endl;
@@ -284,7 +282,7 @@ int main()
                 {
                     cout<<"Data has not yet been retrieved! Try retrieving data first using Option 1 in Main Menu!"<<endl;
                 }
-                //break;
+                
             }
             else if(x == "5")
             {
